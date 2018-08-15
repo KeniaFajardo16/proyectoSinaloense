@@ -1,0 +1,2654 @@
+create database proyectosinaloense;
+use proyectosinaloense;
+
+create table Marcas(id_marca int identity, nombre_marca varchar(100), primary key(id_marca));
+
+create table Anios (id_anio int, descripcion_anio varchar (100), primary key(id_anio));
+
+create table Modelos(id_modelo int identity, descripcion_modelo varchar(100),primary key (id_modelo));
+
+create table Tipo_Motores(id_tipoMotor int identity, descripcion_tipoMotor varchar (100), primary key(id_tipoMotor));
+
+create table Usuarios(id_usuario int identity primary key, 
+nombre_usuario varchar(100),
+tipo_usuario int,
+usuario varchar(30),
+pass varchar(50));
+
+create table  Vehiculos(
+id_vehiculo int identity,
+anio_vehiculo int,
+marca_vehiculo int,
+modelo_vehiculo int,
+tipoMotor_vehiculo int, 
+PRIMARY KEY(id_vehiculo),
+FOREIGN KEY (anio_vehiculo) REFERENCES Anios(id_anio) on delete cascade on update cascade,
+FOREIGN KEY (marca_vehiculo) REFERENCES Marcas(id_marca) on delete cascade on update cascade,
+FOREIGN KEY (modelo_vehiculo) REFERENCES Modelos(id_modelo) on delete cascade on update cascade,
+FOREIGN KEY (tipoMotor_vehiculo) REFERENCES Tipo_Motores(id_tipoMotor) on delete cascade on update cascade,
+);
+
+
+create table Categorias(id_categoria int identity, nombre_categoria varchar (100), primary key(id_categoria));
+
+create table Estados(id_estado int identity, nombre_estado varchar (100),primary key(id_estado));
+
+create table Ciudades(id_ciudad int identity, 
+nombre_ciudad varchar(100), 
+estado_ciudad int, 
+primary key (id_ciudad), 
+foreign key (estado_ciudad) references Estados(id_estado) on delete cascade on update cascade);
+
+create table Proveedores(id_proveedor int identity,
+rfc_proveedor varchar(30),
+nombre_proveedor varchar(100), 
+ciudad_proveedor int, telefono_proveedor varchar(20),
+cp_proveedor varchar(100), 
+primary key (id_proveedor), foreign key (ciudad_proveedor)
+references Ciudades(id_ciudad) on delete cascade on update cascade);
+
+
+create table Almacenes(
+id_almacen int primary key identity,
+descripcion varchar(100),
+ciudad_almacen int,
+foreign key (ciudad_almacen) references Ciudades(id_ciudad) on delete cascade on update cascade);
+
+
+create table SubCategorias(
+id_subcategoria int primary key identity,
+nombre_subcategoria varchar(100),
+categoria_subcategoria int,
+foreign key (categoria_subcategoria) references Categorias(id_categoria) on update cascade on delete cascade
+);
+
+create table Catalogos(
+id_catalogo int primary key identity,
+vehiculo_catalogo int,
+subcategoria_catalogo int,
+foreign key (vehiculo_catalogo) references Vehiculos(id_vehiculo) on update cascade on delete cascade,
+foreign key (subcategoria_catalogo) references SubCategorias(id_subcategoria) on delete cascade on update cascade
+);
+
+
+create table Refacciones(
+folio_refaccion int identity,
+descripcion_refaccion varchar(350),
+existencias_refaccion int,
+catalogo_refaccion int,
+proveedor_refaccion int,
+primary key (folio_refaccion),
+foreign key (catalogo_refaccion) references Catalogos(id_catalogo) on update cascade on delete cascade,
+foreign key (proveedor_refaccion) references Proveedores(id_proveedor) on update cascade on delete cascade,
+);
+
+create table Salidas(
+	folio_salida int identity,
+	fecha_salida datetime,
+	refaccion_salida int,
+	cantidad_salida int,
+	almacen_salida int,
+	primary key(folio_salida),
+	foreign key(refaccion_salida) references Refacciones (folio_refaccion),
+	foreign key(almacen_salida) references Almacenes (id_almacen)
+);
+
+create table Devoluciones(
+	folio_devolucion int primary key identity,
+	fecha_devolucion datetime,
+	salida_devolucion int,
+	almacen_devolucion int,
+	observacion_devolucion varchar(150),
+	foreign key (salida_devolucion) references Salidas(folio_salida) on update cascade on delete cascade,
+	foreign key (almacen_devolucion) references Almacenes(id_almacen) on update cascade on delete cascade
+);
+
+
+create table Entradas(
+	folio_entrada int primary key identity,
+	fecha_entrada datetime,
+	refaccion_entrada int,
+	cantidad_entrada int,
+	almacen_entrada int,
+	foreign key(refaccion_entrada) references Refacciones(folio_refaccion),
+	foreign key(almacen_entrada) references Almacenes(id_almacen)
+);
+
+--------------------------------------INSERTS--------------------------------------------------------------+
+insert into Marcas values
+('Acura'),
+('Audi'),
+('BMW'),
+('Cadillac'),
+('Chevrolet'),
+('Dodge'),
+('Fiat'),
+('Ford'),
+('Honda'),
+('Hyundai'),
+('Isuzu'),
+('Jeep'),
+('Kia'),
+('Lincoln'),
+('Mazda'),
+('Mercedez Benz'),
+('Mini'),
+('Mitsubishi'),
+('Nissan'),
+('Peugeot'),
+('Renault'),
+('Satum'),
+('Seat'),
+('Suzuki'),
+('Toyota'),
+('Volkswagen'),
+('Volvo');
+
+
+insert into Anios values 
+(2000,'2000'),
+(2001,'2001'),
+(2002,'2002'),
+(2003,'2003'),
+(2004,'2004'),
+(2005,'2005'),
+(2006,'2006'),
+(2007,'2007'),
+(2008,'2008'),
+(2009,'2009'),
+(2010,'2010'),
+(2011,'2011'),
+(2012,'2012'),
+(2013,'2013'),
+(2014,'2014'),
+(2015,'2015'),
+(2016,'2016'),
+(2017,'2017'),
+(2018,'2018'),
+(2019,'2019'),
+(2020,'2020');
+
+
+insert into Estados values
+('Aguascalientes'),
+('Baja California'),
+('Baja California Sur'),
+('Campeche'),
+('Chiapas'),
+('Chihuahua'),
+('Coahuila'),
+('Colima'),
+('Durango'),
+('Estado de México'),
+('Guanajuato'),
+('Guerrero'),
+('Hidalgo'),
+('Jalisco'),
+('Michoacán'),
+('Morelos'),
+('Nayarit'),
+('Nuevo León'),
+('Oaxaca'),
+('Puebla'),
+('Querétaro'),
+('Quintana Roo'),
+('San Luis Potosí'),
+('Sinaloa'),
+('Sonora'),
+('Tabasco'),
+('Tamaulipas'),
+('Tlaxcala'),
+('Veracruz'),
+('Yucatán'),
+('Zacatecas'),
+('CDMX');
+
+
+
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Aguascalientes',1);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('La Paz',3);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tijuana',2);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Mexicali',2);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Ensenada',2);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Francisco de Campeche',4);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Ciudad del Carmen',4);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tuxtla Gutiérrez',5);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tapachula',5);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Cristóbal de las Casas',5);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cd. Juárez',6);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Chihuahua',6);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Delicias',6);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cd. Cuauhtémoc',6);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Hidalgo del Parral',6);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Saltillo',6);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Torreón',7);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Moncliva',7);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Piedras Negras',7);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cd. Acuña',7);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Colima',7);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Manzanillo',8);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Villa de Álvarez',8);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Victoria de Durango',8);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Ecatepec',9);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Nezahulcóyotl',9);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Naucalpan',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tlanepantla',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Chimalhuacán',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Toluca',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cd. López Mateos',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cuautitlán',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Xico',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Iztapaluca',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Villa Nicolás Romero',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Francisco Coacalco',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Ojo de Agua',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Buenavista',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Pablo de las Salinas',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Chicoloapan',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Chalco de Díaz',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Naucalpan de Juárez',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cuautitlán',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Texcoco',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tepexpan',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cuautitlán Izcalli',10);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('León',11);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Irapuato',11);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Celaya',11);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Salamanca',11);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Acapulco',12);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Chilpancingo',12);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Iguala',12);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Pachuca',13);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tulancingo',13);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Guadalajara',14);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Zapopan',14);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tlaquepaque',14);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tonalá',14);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Puerto Vallarta',14);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Morelia',15);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Uruapan',15);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Zamora',15);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cuernavaca',16);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Jutepec',16);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cuautla',16);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tepic',17);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Monterrey',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Guadalupe',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Apodaca',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Nicolás',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Gral. Escobedo',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Santa Catarina',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Juárez',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Pedro Garza',18);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Oaxaca',19);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Juan Bautista',19);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Puebla de Zaragoza',20);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Tehuacán',20);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Santiago de Querétaro',21);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Juan del Río',21);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cancún',22);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Chetumal',22);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Playa del Carmen',22);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Luis Potosí',23);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Soledad de Graciano Sánchez',23);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cd. Valles',23);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Culiacán Rosales',24);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Mazatlán',24);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Los Mochis',24);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Hermosillo',25);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Cd. Obregón',25);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Heroica Nogales',25);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('San Luis Río',25);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Navojoa',25);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Guaymas',25);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Villahermosa',26);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Reynosa',27);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Heroica Matamoros',27);
+insert into Ciudades (nombre_ciudad, estado_ciudad) values ('Nuevo Laredo',27);
+
+--
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bailey-Romaguera', 1);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Ferry-Runolfsson', 2);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Adams, Weimann and Lindgren', 3);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Labadie, Boyle and Koelpin', 4);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Corkery-Bahringer', 5);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Will, Kunze and Kunde', 6);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Spencer-Von', 7);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Haley and Sons', 8);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bogisich-Harber', 9);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Swift and Sons', 10);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Leuschke, Rogahn and Buckridge', 11);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Williamson-Corwin', 12);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Denesik Group', 13);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Leuschke-Bosco', 14);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Friesen-Baumbach', 15);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Dietrich and Sons', 16);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Jacobson LLC', 17);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bernhard Inc', 18);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Mitchell, Zulauf and Hills', 19);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Windler LLC', 20);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Kuvalis-Mitchell', 21);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Zemlak and Sons', 22);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Trantow, Schultz and Nienow', 23);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Kunze Group', 24);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Ward Inc', 25);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Farrell, Olson and Mayert', 26);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Thompson-Boyle', 27);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Hansen, Gislason and Aufderhar', 28);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Kunze Group', 29);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Toy-Wolff', 30);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Johns, Dibbert and Kessler', 31);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Stracke, Collins and West', 32);
+insert into Almacenes (descripcion, ciudad_almacen) values ('O''Keefe Inc', 33);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Hansen, Rosenbaum and Quigley', 34);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Fadel Inc', 35);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bartoletti-Kautzer', 36);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Strosin, Kassulke and Konopelski', 37);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bernier Inc', 38);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Pagac and Sons', 39);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Weber-Schimmel', 40);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Sawayn Inc', 41);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Will, Parisian and Cummerata', 42);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Beer-Swift', 43);
+insert into Almacenes (descripcion, ciudad_almacen) values ('McLaughlin and Sons', 44);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bauch and Sons', 45);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Boehm, Mohr and Rau', 46);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Gerhold-Block', 47);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Douglas-Walker', 48);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Feest-Becker', 49);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Koelpin-Funk', 50);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Grady, Kuphal and Olson', 51);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Nienow Inc', 52);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Harber-Bergnaum', 53);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Goyette Group', 54);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Mante LLC', 55);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Sipes Inc', 56);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Farrell, Lehner and Stanton', 57);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Hyatt-McGlynn', 58);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Stehr, Torp and Johnson', 59);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Heathcote-Gislason', 60);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Flatley and Sons', 61);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Reichert-Yundt', 62);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Torphy-Cummerata', 63);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Kozey-Witting', 64);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Wyman-Legros', 65);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Schinner, Casper and Jacobi', 66);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Donnelly, Torp and Nikolaus', 67);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Nicolas-Ratke', 68);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Satterfield-D''Amore', 69);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Jast Inc', 70);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Walsh, Senger and Doyle', 71);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Gerlach-Lowe', 72);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Schumm Group', 73);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Von and Sons', 74);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bechtelar, Herman and Hauck', 75);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Wolff, Flatley and Ferry', 76);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Hyatt-Keeling', 77);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bahringer and Sons', 78);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Lynch-Hoeger', 79);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Labadie Group', 80);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Kemmer, Purdy and Schaefer', 81);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Parisian-Koelpin', 82);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Cummings-Ankunding', 83);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Hodkiewicz-Haag', 84);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Medhurst LLC', 85);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Gleason LLC', 86);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Connelly Group', 87);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Hauck, Osinski and Tillman', 88);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Lind-Herzog', 89);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Russel, Barrows and Macejkovic', 90);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Strosin, Howe and Kunde', 91);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Lind, Grant and Toy', 92);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Weissnat Inc', 93);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Homenick Inc', 94);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Rolfson LLC', 95);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Green, Lind and Haley', 96);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Streich-Dickinson', 97);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Pagac, Hermiston and Harvey', 98);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Von, VonRueden and Beier', 99);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Zemlak Group', 100);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Rowe-Barrows', 1);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Green-Monahan', 2);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Dibbert Inc', 3);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Gottlieb-Hayes', 4);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Kris-Ullrich', 5);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Feil LLC', 6);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Rolfson-Effertz', 7);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Keebler Group', 8);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Casper-Wintheiser', 9);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Strosin, Lemke and Muller', 10);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Emard Inc', 11);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Welch Inc', 12);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Marquardt-MacGyver', 13);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Gislason, Cruickshank and Keebler', 14);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Haley, Schroeder and Ziemann', 15);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Watsica, Conroy and Crooks', 16);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Labadie-Schmitt', 17);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Larkin-Mueller', 18);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Rogahn-Oberbrunner', 19);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Roberts, Williamson and Dach', 20);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Schneider-Towne', 21);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Wyman-Welch', 22);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Satterfield Group', 23);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Grimes and Sons', 24);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Roob-Windler', 25);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Kling, Mayert and Quitzon', 26);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Zemlak-Thompson', 27);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Ruecker-Rippin', 28);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Baumbach, Goyette and Satterfield', 29);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Ryan, Bashirian and Sauer', 30);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Lakin Group', 31);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Goyette Inc', 32);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Adams and Sons', 33);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bechtelar, Fay and O''Kon', 34);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Bergnaum-Gislason', 35);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Reilly-Ondricka', 36);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Boyer-Kiehn', 37);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Erdman, Mertz and Hintz', 38);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Schaefer, Hane and Hermann', 39);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Stoltenberg-Denesik', 40);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Stark-Nicolas', 41);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Boyer-Keebler', 42);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Gorczany LLC', 43);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Brown-Nikolaus', 44);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Lueilwitz Group', 45);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Hodkiewicz-Beer', 46);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Wiza, McClure and Schneider', 47);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Murphy-Wiza', 48);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Nicolas, Hansen and Collier', 49);
+insert into Almacenes (descripcion, ciudad_almacen) values ('Mohr-O''Keefe', 50);
+
+
+
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Diésel');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Gasolina');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Eléctrico');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Hidrógeno');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('4 Cilindros');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('6 Cilindros');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('8 Cilindros');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Líneal');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Tipo V');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Lateral');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Boxer');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Tipo W');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Tipo H');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Disposición radial');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Rotativo');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Trasero');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Delantero');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('12 Cilindros');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Híbrido');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Corriente Continua');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Compound');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Shunt');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Eléctrico sin escobillas');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Paso a Paso');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('ServoMotor');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Sin núcleo');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Asíncrono');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Síncrono');
+insert into Tipo_Motores (descripcion_tipoMotor) values ('Universal');
+
+
+
+
+insert into Modelos (descripcion_modelo) values ('Pathfinder');
+insert into Modelos (descripcion_modelo) values ('Navajo');
+insert into Modelos (descripcion_modelo) values ('RAV4');
+insert into Modelos (descripcion_modelo) values ('V50');
+insert into Modelos (descripcion_modelo) values ('Savana');
+insert into Modelos (descripcion_modelo) values ('Sierra 1500');
+insert into Modelos (descripcion_modelo) values ('Acadia');
+insert into Modelos (descripcion_modelo) values ('Yukon');
+insert into Modelos (descripcion_modelo) values ('Rendezvous');
+insert into Modelos (descripcion_modelo) values ('S-Class');
+insert into Modelos (descripcion_modelo) values ('626');
+insert into Modelos (descripcion_modelo) values ('GS');
+insert into Modelos (descripcion_modelo) values ('6 Series');
+insert into Modelos (descripcion_modelo) values ('F250');
+insert into Modelos (descripcion_modelo) values ('Leaf');
+insert into Modelos (descripcion_modelo) values ('Safari');
+insert into Modelos (descripcion_modelo) values ('Yukon XL 2500');
+insert into Modelos (descripcion_modelo) values ('tC');
+insert into Modelos (descripcion_modelo) values ('IS F');
+insert into Modelos (descripcion_modelo) values ('Rally Wagon G3500');
+insert into Modelos (descripcion_modelo) values ('Grand Am');
+insert into Modelos (descripcion_modelo) values ('4Runner');
+insert into Modelos (descripcion_modelo) values ('CR-V');
+insert into Modelos (descripcion_modelo) values ('300ZX');
+insert into Modelos (descripcion_modelo) values ('Monte Carlo');
+insert into Modelos (descripcion_modelo) values ('Endeavor');
+insert into Modelos (descripcion_modelo) values ('Lumina');
+insert into Modelos (descripcion_modelo) values ('I');
+insert into Modelos (descripcion_modelo) values ('Terraza');
+insert into Modelos (descripcion_modelo) values ('S80');
+insert into Modelos (descripcion_modelo) values ('Caliber');
+insert into Modelos (descripcion_modelo) values ('RAV4');
+insert into Modelos (descripcion_modelo) values ('NV2500');
+insert into Modelos (descripcion_modelo) values ('Vandura 1500');
+insert into Modelos (descripcion_modelo) values ('Eldorado');
+insert into Modelos (descripcion_modelo) values ('E-Class');
+insert into Modelos (descripcion_modelo) values ('GTO');
+insert into Modelos (descripcion_modelo) values ('Tracker');
+insert into Modelos (descripcion_modelo) values ('B-Series');
+insert into Modelos (descripcion_modelo) values ('Sierra 1500');
+insert into Modelos (descripcion_modelo) values ('TundraMax');
+insert into Modelos (descripcion_modelo) values ('M3');
+insert into Modelos (descripcion_modelo) values ('Bonneville');
+insert into Modelos (descripcion_modelo) values ('Fiero');
+insert into Modelos (descripcion_modelo) values ('Savana 1500');
+insert into Modelos (descripcion_modelo) values ('Optima');
+insert into Modelos (descripcion_modelo) values ('Corvette');
+insert into Modelos (descripcion_modelo) values ('GranTurismo');
+insert into Modelos (descripcion_modelo) values ('Mystique');
+insert into Modelos (descripcion_modelo) values ('Town Car');
+insert into Modelos (descripcion_modelo) values ('Accord');
+insert into Modelos (descripcion_modelo) values ('Yukon XL 2500');
+insert into Modelos (descripcion_modelo) values ('STS');
+insert into Modelos (descripcion_modelo) values ('T100');
+insert into Modelos (descripcion_modelo) values ('Grand Marquis');
+insert into Modelos (descripcion_modelo) values ('2500');
+insert into Modelos (descripcion_modelo) values ('Corvette');
+insert into Modelos (descripcion_modelo) values ('RX');
+insert into Modelos (descripcion_modelo) values ('M5');
+insert into Modelos (descripcion_modelo) values ('Diamante');
+insert into Modelos (descripcion_modelo) values ('Rio');
+insert into Modelos (descripcion_modelo) values ('Mystique');
+insert into Modelos (descripcion_modelo) values ('H2 SUV');
+insert into Modelos (descripcion_modelo) values ('RX');
+insert into Modelos (descripcion_modelo) values ('Pajero');
+insert into Modelos (descripcion_modelo) values ('Avalon');
+insert into Modelos (descripcion_modelo) values ('Jetta');
+insert into Modelos (descripcion_modelo) values ('Tundra');
+insert into Modelos (descripcion_modelo) values ('RX-7');
+insert into Modelos (descripcion_modelo) values ('Beretta');
+insert into Modelos (descripcion_modelo) values ('Nuova 500');
+insert into Modelos (descripcion_modelo) values ('Beretta');
+insert into Modelos (descripcion_modelo) values ('MX-6');
+insert into Modelos (descripcion_modelo) values ('DB9');
+insert into Modelos (descripcion_modelo) values ('Monterey');
+insert into Modelos (descripcion_modelo) values ('Prizm');
+insert into Modelos (descripcion_modelo) values ('Laser');
+insert into Modelos (descripcion_modelo) values ('Cougar');
+insert into Modelos (descripcion_modelo) values ('4Runner');
+insert into Modelos (descripcion_modelo) values ('Grand Am');
+insert into Modelos (descripcion_modelo) values ('Dakota');
+insert into Modelos (descripcion_modelo) values ('911');
+insert into Modelos (descripcion_modelo) values ('Taurus');
+insert into Modelos (descripcion_modelo) values ('Suburban 1500');
+insert into Modelos (descripcion_modelo) values ('Transit Connect');
+insert into Modelos (descripcion_modelo) values ('Endeavor');
+insert into Modelos (descripcion_modelo) values ('LS');
+insert into Modelos (descripcion_modelo) values ('Avalanche');
+insert into Modelos (descripcion_modelo) values ('M-Class');
+insert into Modelos (descripcion_modelo) values ('88');
+insert into Modelos (descripcion_modelo) values ('VUE');
+insert into Modelos (descripcion_modelo) values ('SLK-Class');
+insert into Modelos (descripcion_modelo) values ('Mazda5');
+insert into Modelos (descripcion_modelo) values ('Elantra');
+insert into Modelos (descripcion_modelo) values ('Highlander');
+insert into Modelos (descripcion_modelo) values ('A6');
+insert into Modelos (descripcion_modelo) values ('LR2');
+insert into Modelos (descripcion_modelo) values ('MX-5');
+insert into Modelos (descripcion_modelo) values ('V8 Vantage');
+insert into Modelos (descripcion_modelo) values ('Sierra 2500');
+insert into Modelos (descripcion_modelo) values ('Savana 3500');
+insert into Modelos (descripcion_modelo) values ('Jetta');
+insert into Modelos (descripcion_modelo) values ('Grand Caravan');
+insert into Modelos (descripcion_modelo) values ('Sunfire');
+insert into Modelos (descripcion_modelo) values ('Impreza');
+insert into Modelos (descripcion_modelo) values ('Concorde');
+insert into Modelos (descripcion_modelo) values ('Equus');
+insert into Modelos (descripcion_modelo) values ('Typ-1');
+insert into Modelos (descripcion_modelo) values ('Esprit');
+insert into Modelos (descripcion_modelo) values ('Escalade EXT');
+insert into Modelos (descripcion_modelo) values ('Datsun/Nissan Z-car');
+insert into Modelos (descripcion_modelo) values ('Ram 1500');
+insert into Modelos (descripcion_modelo) values ('Grand Am');
+insert into Modelos (descripcion_modelo) values ('Karif');
+insert into Modelos (descripcion_modelo) values ('Rainier');
+insert into Modelos (descripcion_modelo) values ('V70');
+insert into Modelos (descripcion_modelo) values ('Countach');
+insert into Modelos (descripcion_modelo) values ('Envoy');
+insert into Modelos (descripcion_modelo) values ('Highlander');
+insert into Modelos (descripcion_modelo) values ('Thunderbird');
+insert into Modelos (descripcion_modelo) values ('E-Series');
+insert into Modelos (descripcion_modelo) values ('Freelander');
+insert into Modelos (descripcion_modelo) values ('Tacoma');
+insert into Modelos (descripcion_modelo) values ('LHS');
+insert into Modelos (descripcion_modelo) values ('Explorer');
+insert into Modelos (descripcion_modelo) values ('S60');
+insert into Modelos (descripcion_modelo) values ('GTO');
+insert into Modelos (descripcion_modelo) values ('STS');
+insert into Modelos (descripcion_modelo) values ('Firefly');
+insert into Modelos (descripcion_modelo) values ('Voyager');
+insert into Modelos (descripcion_modelo) values ('RL');
+insert into Modelos (descripcion_modelo) values ('Aspire');
+insert into Modelos (descripcion_modelo) values ('Passat');
+insert into Modelos (descripcion_modelo) values ('Equinox');
+insert into Modelos (descripcion_modelo) values ('Explorer');
+insert into Modelos (descripcion_modelo) values ('Legacy');
+insert into Modelos (descripcion_modelo) values ('Leone');
+insert into Modelos (descripcion_modelo) values ('Tredia');
+insert into Modelos (descripcion_modelo) values ('Explorer Sport');
+insert into Modelos (descripcion_modelo) values ('A8');
+insert into Modelos (descripcion_modelo) values ('A6');
+insert into Modelos (descripcion_modelo) values ('Cobalt SS');
+insert into Modelos (descripcion_modelo) values ('MX-5');
+insert into Modelos (descripcion_modelo) values ('Fiesta');
+insert into Modelos (descripcion_modelo) values ('G-Series G10');
+insert into Modelos (descripcion_modelo) values ('i-350');
+insert into Modelos (descripcion_modelo) values ('Sequoia');
+insert into Modelos (descripcion_modelo) values ('R8');
+insert into Modelos (descripcion_modelo) values ('Ridgeline');
+insert into Modelos (descripcion_modelo) values ('Sephia');
+
+
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('574-99-0604', 'Julita Kringe', 1, '5248254247', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('247-90-8151', 'Elsy Saltrese', 2, '9379244729', '172630');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('552-43-0804', 'Ernst Waddingham', 3, '7767792854', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('858-22-6971', 'Dorolice Elders', 4, '2684259022', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('430-61-4806', 'Vaclav Dishman', 5, '1356934462', '84147 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('273-65-6043', 'Berkeley Wardley', 6, '9342815687', '763029');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('880-42-1334', 'Mortimer Clethro', 7, '2468994551', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('443-42-8058', 'Corly Flindall', 8, '1453764208', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('403-44-4034', 'Curtice Renish', 9, '6494884020', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('661-37-0528', 'Tarrance Pinnijar', 10, '9226972734', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('882-40-0979', 'Starla Folkes', 11, '6077275797', '62411 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('146-15-7448', 'Vaughan Scranney', 12, '6834665657', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('699-83-5975', 'Jordain Bech', 13, '9363681220', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('535-70-1264', 'Violet Grundey', 14, '1026230654', '43-243');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('214-85-0797', 'Jarvis Steed', 15, '7413031296', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('417-56-3187', 'Christie Tippin', 16, '3399190417', 'BS14');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('494-06-5661', 'Randolph Gronaver', 17, '2801255813', '981-4121');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('556-08-5444', 'Faith Ould', 18, '9351408009', '63530');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('783-41-4200', 'Gael Cripps', 19, '9155920616', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('410-18-0976', 'Eldin Parken', 20, '2983328715', '917 32');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('136-51-3494', 'Kary Fearon', 21, '8842669522', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('293-61-8307', 'Sally Meaders', 22, '7243210617', '309573');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('398-74-4972', 'Hulda Spurritt', 23, '6802430949', '64-140');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('877-96-9144', 'Ladonna Langstone', 24, '4054444077', '73173');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('548-65-3887', 'Joly Thomen', 25, '2489474806', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('569-88-8093', 'Carter Staley', 26, '7996198329', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('311-96-9313', 'Charity Di Biasi', 27, '5808561477', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('239-47-5616', 'Cordula Hamlin', 28, '8819789992', '6224');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('528-49-7954', 'Merrill Conachie', 29, '8947225193', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('791-19-1662', 'Agnese Headland', 30, '1195889329', '5613');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('886-39-2843', 'Zed Titchard', 31, '8485824693', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('363-81-7596', 'Dorey de Castelain', 32, '3036439733', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('644-88-7771', 'Rosamund Guidetti', 33, '5872140297', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('142-51-5137', 'Carlos Ingamells', 34, '9234713862', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('254-87-0163', 'Andie Jurek', 35, '9472965894', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('736-27-2725', 'Wait Hirschmann', 36, '4985845542', '13560-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('874-45-6658', 'Sunny Sackur', 37, '3623437368', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('219-04-3655', 'Fanni Kitchingman', 38, '2687926384', '620995');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('187-42-6461', 'Somerset Cromer', 39, '6125325703', '21-060');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('187-52-7326', 'Rafa Gamlen', 40, '4142527937', '7505');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('652-93-7833', 'Cosetta Ruzek', 41, '4622771782', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('469-25-0829', 'Murray Grime', 42, '1375829608', '37958-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('230-85-8806', 'Charity Mathis', 43, '4236997756', '1885-029');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('441-86-3157', 'Chrysler Maine', 44, '3669036334', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('497-47-6178', 'Pace Furzey', 45, '9257666454', '38542');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('663-20-3847', 'Desiri Aylwin', 46, '5496493657', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('835-44-5624', 'Petronella Capron', 47, '8679693836', '51242');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('614-67-1270', 'Amandi Gorgen', 48, '9024795160', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('268-06-5118', 'Arnuad Blake', 49, '4658702246', '2435-553');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('491-09-2786', 'Osbourn Samuel', 50, '8415409987', '3362');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('122-78-2431', 'Helaine Filipson', 51, '2816599845', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('652-44-5945', 'Herschel Shakespear', 52, '9863796263', '2695-584');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('721-22-7737', 'Blondy Retallack', 53, '9376684665', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('563-07-0706', 'Natale Giovanetti', 54, '9414058983', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('595-59-2875', 'Adlai Grinley', 55, '7228094088', '33394 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('337-95-2199', 'Jean Sidery', 56, '5704954938', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('527-32-7013', 'Elfie Tovey', 57, '8277038366', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('507-44-1415', 'Mahmud Pickavant', 58, '1901544758', '83404 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('412-31-8050', 'Genvieve Hasard', 59, '6958938652', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('131-21-3009', 'Velvet Pighills', 60, '6976170291', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('314-17-0217', 'Billie Gordon-Giles', 61, '1369477042', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('866-75-0849', 'Anatole Fergie', 62, '5629206711', '678179');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('690-31-5405', 'Rudolph Telling', 63, '5004076690', '182 74');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('501-22-4043', 'Tildy Gudyer', 64, '2259485554', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('761-87-8034', 'Mose Kollatsch', 65, '3093902298', '61635');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('819-55-5190', 'Aylmar Pigeram', 66, '5214776649', '2424');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('293-93-4073', 'Kippie Keniwell', 67, '8225855648', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('338-22-7098', 'Aarika Clemot', 68, '2211665994', '8760');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('499-34-1971', 'Klemens Ioselevich', 69, '4787101877', '4701');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('227-46-5434', 'Edward Nitto', 70, '7868983751', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('674-17-8055', 'Dorrie McCloy', 71, '8919866008', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('453-15-6273', 'Orelie Olman', 72, '8272593070', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('662-13-2000', 'Maddy Trubshaw', 73, '3736397775', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('367-28-2818', 'Stanley Bartolomucci', 74, '8824049465', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('569-40-5975', 'Vicky Tolomei', 75, '4891747201', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('143-87-5380', 'Barnie Cowterd', 76, '9416862320', '33982');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('614-06-1385', 'Lonnie Haslen', 77, '1658632752', '11493 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('244-14-9914', 'Dermot Mayte', 78, '5571345863', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('166-78-0653', 'Haily Bicknell', 79, '2644651691', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('816-86-0872', 'Vernice MacDwyer', 80, '6789656248', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('761-33-6593', 'Nicoline Cureton', 81, '9322006141', '051059');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('424-97-2029', 'Kelby Nijssen', 82, '2459226214', '461150');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('214-83-2279', 'Shell Josilowski', 83, '6086721548', '756 57');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('228-28-6334', 'Kimball Maymand', 84, '8947313903', 'R3J');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('894-11-0326', 'Theadora Hentze', 85, '3898995919', '2525-675');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('583-10-7211', 'Vladamir Duncklee', 86, '5005295629', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('721-07-5888', 'Davon Cluet', 87, '3803427105', '415088');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('230-74-5009', 'Orion List', 88, '6806836436', '55400-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('412-53-8381', 'Frederick Coakley', 89, '8906266376', '289 22');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('504-21-4555', 'Alla Storrie', 90, '5957953784', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('369-31-3859', 'Dacia Hobgen', 91, '6337408606', '79104 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('376-67-4773', 'Hoyt Brehault', 92, '5135630479', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('699-36-5509', 'Carissa Gillmore', 93, '3292901853', '6824');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('657-91-6355', 'Hamil Bonifazio', 94, '8484244166', '14130');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('836-06-2783', 'Karol Matei', 95, '9478116809', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('218-19-8459', 'Torrey Dorran', 96, '7718841152', '11907');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('186-28-7885', 'Kerk Cholerton', 97, '1633688947', '232517');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('640-06-8946', 'Ree Beynke', 98, '1705901151', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('619-74-0505', 'Jocelyne Swainsbury', 99, '3259674662', '735');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('391-05-1390', 'Tatiana Evanson', 100, '6703061635', '5029');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('762-06-7089', 'Marsh Jursch', 1, '6128726634', '55123');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('414-17-3583', 'Wynny Sparwell', 2, '3526173275', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('834-56-5592', 'Cheri MacRanald', 3, '2028793552', '56944');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('813-11-0994', 'Leoine Gullan', 4, '5785913283', '41-922');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('584-19-0520', 'Curt Heinonen', 5, '5204912182', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('850-31-3415', 'Halli Pickring', 6, '1772941188', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('385-74-7469', 'Darrel Chipp', 7, '6966619084', '636450');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('751-22-9164', 'Odette Dimsdale', 8, '8872644441', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('186-52-0702', 'Margery McCrossan', 9, '2411953899', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('667-68-9732', 'Bernita McKeveney', 10, '2975319506', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('784-01-1295', 'Filbert Litt', 11, '9322496780', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('464-72-3054', 'Hetti MacCallion', 12, '1499288903', 'L2J');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('865-02-2018', 'Isabelle Lamplugh', 13, '3178504343', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('180-43-9649', 'Maris Wozencroft', 14, '3579094130', '6060-104');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('234-15-6938', 'Hartley Schukraft', 15, '8613319067', '7030');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('807-34-7281', 'Winston Mumford', 16, '7087937710', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('812-44-5807', 'Tome Hardaway', 17, '9276485043', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('320-94-2331', 'Munroe Lohmeyer', 18, '2403461395', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('128-97-0168', 'Valentine Vlasov', 19, '6055035235', '94101');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('588-73-6738', 'Elden Betchley', 20, '9944916218', '7500-130');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('837-85-4102', 'Lesley Guiett', 21, '9269172023', '91009 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('541-37-1317', 'Tiffanie Cleynaert', 22, '7321848870', '9202');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('791-41-6485', 'Jorrie Biever', 23, '2107572281', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('412-10-4610', 'Hendrik MacBean', 24, '6395642445', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('140-37-4534', 'Felita Bairnsfather', 25, '7821951366', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('193-34-4581', 'Ferd Grunson', 26, '6668878620', '76240-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('516-90-8979', 'Berthe Barnfather', 27, '8145687328', '661028');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('205-76-0564', 'William Sperrett', 28, '7513972852', '17580-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('640-53-5855', 'Lindsey Slot', 29, '5161073280', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('520-16-6818', 'Flynn Hutchence', 30, '7498954127', '10612');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('305-24-5240', 'Arlena Guido', 31, '8405395599', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('121-30-1194', 'Saw Choppin', 32, '8183238985', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('525-64-8574', 'Cam Pearle', 33, '3041663063', '25709');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('776-68-6767', 'Benny Samme', 34, '6325348006', '391710');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('862-01-9545', 'Sullivan Gotts', 35, '9824182783', '36-042');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('253-21-2321', 'Doralynne Tourot', 36, '3319918376', '39270-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('584-20-2974', 'Caitrin Axtonne', 37, '2654640225', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('300-97-0034', 'Forrest Ramelet', 38, '5571616065', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('356-41-9189', 'Bernice Nast', 39, '8544654921', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('715-87-4536', 'Amandy Hallyburton', 40, '7978150936', '75640-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('869-78-7195', 'Connie Count', 41, '2456505453', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('586-89-0288', 'Catlaina Freen', 42, '7309048341', '131 88');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('378-74-0517', 'Tremain Ambrogelli', 43, '4913145764', '18120');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('708-12-0747', 'Trista Seel', 44, '6419090180', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('162-99-6203', 'Pammie Swanton', 45, '5518973897', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('293-08-9849', 'Clara Mirfield', 46, '3819081968', '6109');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('143-17-0686', 'Cobbie Hennemann', 47, '4166507454', '64109 CEDEX');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('464-69-1715', 'Estella Wilton', 48, '5167349565', '4541');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('128-72-9732', 'Sargent Atkins', 49, '1666635234', '98828');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('641-21-8650', 'Lesley Cowp', 50, '6094863461', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('217-14-5934', 'Yank Tolhurst', 51, '4109564861', '06-561');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('543-34-6426', 'Renaldo Barlthrop', 52, '9245282267', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('524-64-4648', 'Jenelle De la Yglesias', 53, '4276934542', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('239-13-6935', 'Ozzy Spohrmann', 54, '1081144182', '62-035');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('509-08-8915', 'Shela Aslum', 55, '1696234683', '2430-418');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('327-31-4643', 'Shadow Van Driel', 56, '4297197091', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('644-26-5743', 'Pepillo Swafford', 57, '8286113996', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('240-21-3491', 'Maribelle Scullin', 58, '8042972776', '5107');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('239-28-8761', 'Oralia Akerman', 59, '4073506149', '32825');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('262-16-6459', 'Winnie Kasperski', 60, '2132894396', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('760-01-4651', 'Emelita Currell', 61, '4194222140', '1535');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('234-33-6305', 'Mariellen Pover', 62, '5208949220', '689400');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('216-02-2922', 'Philipa Cafferty', 63, '4342974548', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('157-50-6369', 'Lucine Clowser', 64, '5003152779', '8115');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('524-57-1611', 'Caldwell Gagg', 65, '8817421417', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('476-86-6560', 'Rockwell Aveyard', 66, '8831924979', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('330-23-6225', 'Bell Boustead', 67, '9618744112', '35252');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('167-42-6674', 'Madelina Goudard', 68, '3379157215', '13010');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('648-22-3562', 'Carmelia Kilbride', 69, '8875507417', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('573-16-7263', 'Larine Kobierra', 70, '9209088573', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('577-30-7764', 'Berthe Stolze', 71, '9383392389', '3312');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('561-13-8672', 'Horatia Skedge', 72, '6515912392', '6419');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('895-93-3529', 'Marthe Crawshaw', 73, '9011171094', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('174-53-0988', 'Nert Dod', 74, '4203620346', '4706');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('493-70-5150', 'Tonya Joslow', 75, '6947805893', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('149-36-9866', 'Ignacio Maddrell', 76, '2928096526', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('871-07-3931', 'Neils Hickford', 77, '8688810442', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('686-16-5880', 'Zorah Kingscote', 78, '2668766874', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('748-42-6432', 'Lorita Parke', 79, '1924238983', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('813-59-2026', 'Baudoin Speek', 80, '2026876280', '20420');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('108-09-2515', 'Helge Swindells', 81, '2624897470', '05001');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('815-42-9502', 'Udall Jarred', 82, '7785150569', '8300');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('164-81-5675', 'Rinaldo Baldinotti', 83, '7474375238', '53231');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('253-17-7605', 'Wilona Tumpane', 84, '7994270812', '64-050');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('413-94-0951', 'Alistair Welsby', 85, '4562414105', '8113');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('350-74-4948', 'Hillel Avison', 86, '1466466794', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('276-49-6474', 'Salome Ottosen', 87, '1076408727', 'R35');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('496-52-2836', 'Dedie Bullan', 88, '4352407200', '05-806');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('823-98-9877', 'Jere Fearneley', 89, '8631680818', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('373-48-9377', 'Kim Aggio', 90, '2843640355', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('486-08-9863', 'Anson Pappi', 91, '5235622030', '595 94');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('696-85-2060', 'Cristiano Ashworth', 92, '7521138310', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('669-94-3062', 'Averyl Foxhall', 93, '9508024458', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('862-27-0492', 'Willy Cranny', 94, '2837541773', '13730-000');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('634-48-3772', 'Prissie Di Pietro', 95, '6175717331', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('634-41-0892', 'Doralyn Mussilli', 96, '7313138715', '17029 CEDEX 1');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('518-94-4021', 'Ninnetta Mungin', 97, '3685212437', '2645-456');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('777-87-9253', 'Roselin O''Gormally', 98, '5709950411', null);
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('677-42-8203', 'Gian Fearey', 99, '8399151449', '432 30');
+insert into Proveedores (rfc_proveedor, nombre_proveedor, ciudad_proveedor, telefono_proveedor, cp_proveedor) values ('481-57-5262', 'Humphrey Hamlyn', 100, '3401897169', null);
+
+
+
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 1, 1, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 2, 2, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 3, 3, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 4, 4, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 5, 5, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 6, 6, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 7, 7, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 8, 8, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 9, 9, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 10, 10, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 11, 11, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 12, 12, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 13, 13, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 14, 14, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 15, 15, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 16, 16, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 17, 17, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 18, 18, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 19, 19, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 20, 20, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 21, 21, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 22, 22, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 23, 23, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 24, 24, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 25, 25, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 26, 26, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 27, 27, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 1, 28, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 2, 29, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 3, 30, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 4, 31, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 5, 32, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 6, 33, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 7, 34, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 8, 35, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 9, 36, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 10, 37, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 11, 38, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 12, 39, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 13, 40, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 14, 41, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 15, 42, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 16, 43, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 17, 44, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 18, 45, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 19, 46, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 20, 47, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 21, 48, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 22, 49, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 23, 50, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 24, 51, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 25, 52, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 26, 53, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 27, 54, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 1, 55, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 2, 56, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 3, 57, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 4, 58, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 5, 59, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 6, 60, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 7, 61, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 8, 62, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 9, 63, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 10, 64, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 11, 65, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 12, 66, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 13, 67, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 14, 68, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 15, 69, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 16, 70, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 17, 71, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 18, 72, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 19, 73, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 20, 74, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 21, 75, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 22, 76, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 23, 77, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 24, 78, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 25, 79, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 26, 80, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 27, 81, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 1, 82, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 2, 83, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 3, 84, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 4, 85, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 5, 86, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 6, 87, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 7, 88, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 8, 89, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 9, 90, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 10, 91, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 11, 92, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 12, 93, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 13, 94, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 14, 95, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 15, 96, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 16, 97, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 17, 98, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 18, 99, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 19, 100, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 20, 1, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 21, 2, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 22, 3, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 23, 4, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 24, 5, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 25, 6, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 26, 7, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 27, 8, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 1, 9, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 2, 10, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 3, 11, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 4, 12, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 5, 13, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 6, 14, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 7, 15, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 8, 16, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 9, 17, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 10, 18, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 11, 19, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 12, 20, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 13, 21, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 14, 22, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 15, 23, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 16, 24, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 17, 25, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 18, 26, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 19, 27, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 20, 28, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 21, 29, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 22, 30, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 23, 31, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 24, 32, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 25, 33, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 26, 34, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 27, 35, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 1, 36, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 2, 37, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 3, 38, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 4, 39, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 5, 40, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 6, 41, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 7, 42, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 8, 43, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 9, 44, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 10, 45, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 11, 46, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 12, 47, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 13, 48, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 14, 49, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 15, 50, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 16, 51, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 17, 52, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 18, 53, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 19, 54, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 20, 55, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 21, 56, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 22, 57, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 23, 58, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 24, 59, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 25, 60, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 26, 61, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 27, 62, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 1, 63, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 2, 64, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 3, 65, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 4, 66, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 5, 67, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 6, 68, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 7, 69, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 8, 70, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 9, 71, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 10, 72, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 11, 73, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 12, 74, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 13, 75, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 14, 76, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 15, 77, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 16, 78, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 17, 79, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 18, 80, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 19, 81, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 20, 82, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 21, 83, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 22, 84, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 23, 85, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 24, 86, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 25, 87, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 26, 88, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 27, 89, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 1, 90, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 2, 91, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 3, 92, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 4, 93, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 5, 94, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 6, 95, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 7, 96, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 8, 97, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 9, 98, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 10, 99, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 11, 100, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 12, 1, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 13, 2, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 14, 3, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 15, 4, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 16, 5, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 17, 6, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 18, 7, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 19, 8, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 20, 9, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 21, 10, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 22, 11, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 23, 12, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 24, 13, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 25, 14, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 26, 15, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 27, 16, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 1, 17, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 2, 18, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 3, 19, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 4, 20, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 5, 21, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 6, 22, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 7, 23, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 8, 24, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 9, 25, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 10, 26, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 11, 27, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 12, 28, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 13, 29, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 14, 30, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 15, 31, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 16, 32, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 17, 33, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 18, 34, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 19, 35, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 20, 36, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 21, 37, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 22, 38, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 23, 39, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 24, 40, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 25, 41, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 26, 42, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 27, 43, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 1, 44, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 2, 45, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 3, 46, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 4, 47, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 5, 48, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 6, 49, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 7, 50, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 8, 51, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 9, 52, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 10, 53, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 11, 54, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 12, 55, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 13, 56, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 14, 57, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 15, 58, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 16, 59, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 17, 60, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 18, 61, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 19, 62, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 20, 63, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 21, 64, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 22, 65, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 23, 66, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 24, 67, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 25, 68, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 26, 69, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 27, 70, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 1, 71, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 2, 72, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 3, 73, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 4, 74, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 5, 75, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 6, 76, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 7, 77, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 8, 78, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 9, 79, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 10, 80, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 11, 81, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 12, 82, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 13, 83, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 14, 84, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 15, 85, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 16, 86, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 17, 87, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 18, 88, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 19, 89, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 20, 90, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 21, 91, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 22, 92, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 23, 93, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 24, 94, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 25, 95, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 26, 96, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 27, 97, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 1, 98, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 2, 99, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 3, 100, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 4, 1, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 5, 2, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 6, 3, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 7, 4, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 8, 5, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 9, 6, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 10, 7, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 11, 8, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 12, 9, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 13, 10, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 14, 11, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 15, 12, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 16, 13, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 17, 14, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 18, 15, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 19, 16, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 20, 17, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 21, 18, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 22, 19, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 23, 20, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 24, 21, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 25, 22, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 26, 23, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 27, 24, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 1, 25, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 2, 26, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 3, 27, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 4, 28, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 5, 29, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 6, 30, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 7, 31, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 8, 32, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 9, 33, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 10, 34, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 11, 35, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 12, 36, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 13, 37, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 14, 38, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 15, 39, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 16, 40, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 17, 41, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 18, 42, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 19, 43, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 20, 44, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 21, 45, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 22, 46, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 23, 47, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 24, 48, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 25, 49, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 26, 50, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 27, 51, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 1, 52, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 2, 53, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 3, 54, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 4, 55, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 5, 56, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 6, 57, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 7, 58, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 8, 59, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 9, 60, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 10, 61, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 11, 62, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 12, 63, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 13, 64, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 14, 65, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 15, 66, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 16, 67, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 17, 68, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 18, 69, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 19, 70, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 20, 71, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 21, 72, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 22, 73, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 23, 74, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 24, 75, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 25, 76, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 26, 77, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 27, 78, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 1, 79, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 2, 80, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 3, 81, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 4, 82, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 5, 83, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 6, 84, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 7, 85, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 8, 86, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 9, 87, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 10, 88, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 11, 89, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 12, 90, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 13, 91, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 14, 92, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 15, 93, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 16, 94, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 17, 95, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 18, 96, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 19, 97, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 20, 98, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 21, 99, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 22, 100, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 23, 1, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 24, 2, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 25, 3, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 26, 4, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 27, 5, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 1, 6, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 2, 7, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 3, 8, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 4, 9, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 5, 10, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 6, 11, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 7, 12, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 8, 13, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 9, 14, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 10, 15, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 11, 16, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 12, 17, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 13, 18, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 14, 19, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 15, 20, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 16, 21, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 17, 22, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 18, 23, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 19, 24, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 20, 25, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 21, 26, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 22, 27, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 23, 28, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 24, 29, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 25, 30, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 26, 31, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 27, 32, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 1, 33, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 2, 34, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 3, 35, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 4, 36, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 5, 37, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 6, 38, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 7, 39, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 8, 40, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 9, 41, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 10, 42, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 11, 43, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 12, 44, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 13, 45, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 14, 46, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 15, 47, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 16, 48, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 17, 49, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 18, 50, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 19, 51, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 20, 52, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 21, 53, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 22, 54, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 23, 55, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 24, 56, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 25, 57, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 26, 58, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 27, 59, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 1, 60, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 2, 61, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 3, 62, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 4, 63, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 5, 64, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 6, 65, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 7, 66, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 8, 67, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 9, 68, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 10, 69, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 11, 70, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 12, 71, 7);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 13, 72, 8);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 14, 73, 9);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 15, 74, 10);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 16, 75, 11);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 17, 76, 12);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 18, 77, 13);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 19, 78, 14);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 20, 79, 15);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2017, 21, 80, 16);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2018, 22, 81, 17);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2019, 23, 82, 18);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2020, 24, 83, 19);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2000, 25, 84, 20);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2001, 26, 85, 21);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2002, 27, 86, 22);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2003, 1, 87, 23);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2004, 2, 88, 24);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2005, 3, 89, 25);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2006, 4, 90, 26);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2007, 5, 91, 27);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2008, 6, 92, 28);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2009, 7, 93, 29);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2010, 8, 94, 1);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2011, 9, 95, 2);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2012, 10, 96, 3);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2013, 11, 97, 4);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2014, 12, 98, 5);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2015, 13, 99, 6);
+insert into Vehiculos (anio_vehiculo, marca_vehiculo, modelo_vehiculo, tipoMotor_vehiculo) values (2016, 14, 100, 7);
+
+
+
+insert into Categorias (nombre_categoria) values ('Refacciones');
+insert into Categorias (nombre_categoria) values ('Accesorios Interiores');
+insert into Categorias (nombre_categoria) values ('Accesorios Exteriores');
+insert into Categorias (nombre_categoria) values ('Carga y Remolque');
+insert into Categorias (nombre_categoria) values ('Herramientas y Equipo');
+insert into Categorias (nombre_categoria) values ('Líquidos y Quìmicos');
+insert into Categorias (nombre_categoria) values ('Alto Desempeño');
+
+
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Baterìa, Arranque y carga', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Carga y remolque', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Control de emisiones y escape', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Control Electrónico del Motor', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Empaques', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Encendido, afinación y mantenimiento de rutina', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Enfriamiento, calefacción y control de clima', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Filtros', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Frenos y control de tracción', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Interior', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Motor Interior', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Partes de colisión, carrocería y herrajes', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Partes externas de motor', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Productos Eléctricos e iluminación', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Suministro de combustible', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Suspensión, dirección, neumáticos y ruedas', 1);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Tren de potencia', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Tren motriz', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Perillas, palancas y productos para puertas', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Calcomanías y gráficos', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Kits de volantes y accesorios', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Estéreo, altavoces y audio', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('GPS, radar y teléfono celular', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Forros/ tapetes para piso y alfombra', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Organización interior y manejo de carga', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cubreasientos, asientos y accesorios', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Alarma y seguridad', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Protección contra el sol y el calor', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Seguridad', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cubiertas de pedales y personalización diversa', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Logo Shop', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Productos de 12 V', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Encendedores', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cubiertas de tableros, forros de techo y viseras', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Espejo retrovisor', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Iluminación', 2);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Manija y partes para puertas', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Accesorios para enganche de remolque, bolas de enganche y remolque', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Productos diversos no automotrices', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Molduras y personalización', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Deflectores (sol, viento y ventana)', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Calcomanías y gráficos', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Reparación de neumáticos y neumáticos/ruedas', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cubiertas para extremos delanteros y productos para el cofre', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Iluminación exterior', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Protección y seguridad', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Amarres y manejo de cargas', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Placa y accesorio', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cubiertas y accesorios', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cables y mástiles para antena', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Winch y accesorios', 3);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Accesorios para caja de camionetas', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ( 'Amarres y correas para remolque', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Articulos Destacados - Carga y remolque', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cableado y productos eléctricos para remolques', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cajas y tanques para almacenar líquidos para camionetas', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cubierta y protector para cajas de camioneta', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cubreasientos y tapetes', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Deflectores de ventana, deflectores de insectos y cubiertas para camionetas', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Enganches, bolas, soportes y accesorios para enganche', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Estribos', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Personalización exterior', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Portaequipajes', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Quinta rueda y cuello de cisne', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Salpicaderas y molduras', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Sistema de suspensión, resortes y dispositivos de elevación/ reducción de altura', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Surtido de iluminación para remolques, reflectores/niebla', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Winch', 4);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Adaptadores y conectores de manguera/línea', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Herramientos de especialidad', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Matracas, adaptadores y llaves', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Empaques y sujetadores diversos', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Llaves, pinzas y cortadores', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Tuercas, tornillos y arandelas', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Herramientas para taller y cochera', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Impulsores de tornillo/tuerca/torx', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Lija y herramientas de reparación de carroceria', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Herramientas neumaticas y accesorios', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Guantes', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Herramientas manuales de corte, perforación, raspado y separado', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Tornillos, pasadores y clips', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Elevación de motor y vehículo', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Herramientas electricas y de poder', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Abrazaderas y herramientas de medición', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cajas de herramientas, almacenamiento y organización', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Manuales y software de reparación', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Martillos', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Camillas para mecanico y carritos', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Herramientas para aplicación de grasa y selladores', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Herramientas-a-prestar', 5);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Pintura y carroceria', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Productos para lavar, encerar y cuidado interior', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Aceite para motor y aditivos para aceite', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Accesorios para lavar y encerar', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Productos de cuidado interior y exterior', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Guantes para lavar, gamuza y otros accesorios para lavar y encerar', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Aditivos y limpiadores para combustible y para motor', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Grasas y aceites para engranes', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Limpiadores y desengrasantes diversos', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Anticongelantes, aditivos para radiadores y líquidos limpiaparabrisas', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Aditivos/líquidos para frenos y dirección', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Carga de A/C y refrigerante /Freón', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Químicos invernales', 6);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Sistema de admisión', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Motor', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Sistemas de combustible', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Aumentadores de potencia y componentes', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Escapes', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Sistema de frenos', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Tubería/Mangueras', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Encendido', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Cromo y adornos', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Marcadores y accesorios para marcadores', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Calefacción y enfriamiento', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Productos diversos de arranque, carga y eléctricos', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Transmisión y tren motriz', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Lubricación de motor y suministro de aceite', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Tren motriz y diferenciales', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Palancas y cambios y accesorios', 7);
+insert into SubCategorias (nombre_subcategoria, categoria_subcategoria) values ('Carrocería, suspensión y dirección', 7);
+
+
+
+
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (363, 20);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (165, 16);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (64, 37);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (474, 14);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (291, 34);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (276, 23);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (371, 54);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (280, 55);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (246, 38);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (282, 60);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (307, 71);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (179, 40);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (354, 104);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (12, 114);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (332, 21);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (372, 106);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (385, 112);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (481, 16);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (184, 14);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (402, 33);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (319, 12);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (50, 28);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (248, 71);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (279, 26);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (306, 2);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (115, 45);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (64, 95);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (481, 54);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (380, 38);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (343, 94);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (447, 10);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (172, 8);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (474, 104);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (326, 110);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (213, 24);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (492, 79);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (160, 81);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (371, 95);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (318, 94);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (24, 65);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (233, 67);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (55, 26);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (366, 26);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (307, 92);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (189, 9);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (217, 28);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (181, 88);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (12, 108);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (500, 69);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (98, 23);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (483, 25);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (167, 47);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (496, 29);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (231, 16);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (76, 97);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (298, 78);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (354, 2);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (296, 16);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (60, 89);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (332, 1);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (396, 44);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (73, 86);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (451, 100);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (287, 32);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (274, 80);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (109, 23);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (297, 93);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (203, 40);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (89, 51);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (215, 11);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (352, 71);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (441, 103);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (76, 23);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (67, 103);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (449, 99);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (193, 73);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (307, 1);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (172, 107);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (469, 49);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (352, 89);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (319, 53);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (213, 29);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (479, 6);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (450, 77);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (478, 58);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (270, 32);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (396, 28);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (496, 98);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (156, 35);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (107, 116);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (466, 55);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (213, 10);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (158, 41);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (126, 44);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (132, 90);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (159, 104);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (72, 34);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (326, 5);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (399, 2);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (182, 8);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (449, 52);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (436, 26);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (256, 91);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (33, 76);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (307, 51);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (36, 68);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (25, 55);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (225, 111);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (91, 48);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (227, 56);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (347, 54);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (57, 96);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (173, 56);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (142, 28);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (381, 33);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (196, 87);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (276, 103);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (371, 65);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (211, 16);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (27, 85);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (350, 41);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (126, 107);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (86, 25);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (408, 49);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (466, 108);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (387, 6);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (420, 17);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (491, 112);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (12, 64);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (4, 17);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (411, 86);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (234, 83);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (104, 7);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (265, 57);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (232, 33);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (333, 104);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values ( 95, 87);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (489, 100);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (25, 40);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (215, 78);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (307, 43);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (17, 79);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (219, 41);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (297, 23);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (183, 62);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (38, 86);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (499, 100);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (200, 1);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (46, 83);
+insert into Catalogos (Vehiculo_catalogo, Subcategoria_catalogo) values (178, 62);
+
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/30, 75, 63, 34);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/17, 488, 32, 22);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/16, 217, 45, 117);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/23, 390, 4, 63);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/09, 395, 72, 136);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/21, 351, 73, 36);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/25, 215, 13, 75);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/27, 193, 85, 108);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/16, 389, 54, 144);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/10, 69, 64, 150);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/11, 455, 24, 73);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/11, 225, 99, 97);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/26, 194, 57, 70);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/23, 321, 46, 35);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/08, 128, 62, 15);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/17, 263, 14, 10);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/24, 160, 51, 142);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/04, 106, 60, 94);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/28, 166, 43, 71);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/19, 145, 1, 77);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/15, 265, 16, 58);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/08, 57, 54, 138);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/27, 479, 32, 1);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/11, 21, 67, 140);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/30, 426, 88, 104);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/10, 57, 24, 23);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/15, 388, 71, 35);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/28, 182, 89, 69);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/07/03, 10, 54, 124);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/03, 337, 50, 52);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/06, 313, 33, 117);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/15, 475, 98, 68);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/21, 330, 35, 61);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/01, 200, 52, 89);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/04, 474, 36, 18);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/22, 139, 33, 64);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/23, 302, 86, 25);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/14, 184, 4, 22);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/09, 6, 63, 11);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/31, 412, 75, 58);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/07, 101, 66, 108);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/16, 380, 74, 54);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/07/11, 360, 79, 23);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/07, 64, 61, 64);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/11, 227, 8, 139);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/18, 397, 1, 91);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/03, 405, 74, 117);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/07, 193, 18, 107);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/15, 254, 58, 42);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/11, 78, 100, 6);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/09, 165, 47, 15);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/28, 359, 61, 92);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/15, 309, 88, 29);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/11, 395, 76, 38);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/24, 122, 99, 51);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/01, 188, 15, 5);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/01, 71, 48, 5);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/22, 155, 99, 12);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/14, 345, 93, 95);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/22, 70, 46, 121);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/24, 6, 96, 142);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/31, 152, 51, 143);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/27, 181, 15, 136);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/08, 443, 33, 79);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/19, 63, 36, 68);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/09, 352, 85, 117);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/26, 475, 36, 23);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/29, 476, 45, 146);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/05, 342, 60, 102);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/29, 396, 94, 60);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/26, 480, 85, 26);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/17, 468, 50, 4);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/07, 8, 93, 85);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/26, 43, 6, 103);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/15, 473, 37, 5);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/13, 85, 89, 143);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/10, 468, 46, 8);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/18, 351, 41, 10);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/16, 99, 23, 11);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/24, 220, 8, 50);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/29, 467, 19, 106);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/01, 332, 46, 90);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/18, 473, 8, 104);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/17, 278, 2, 109);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/23, 155, 5, 108);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/21, 397, 40, 109);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/21, 243, 59, 38);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/07, 335, 90, 117);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/08, 420, 22, 149);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/07, 173, 97, 148);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/18, 202, 99, 87);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/07, 64, 24, 125);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/29, 155, 30, 84);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/08, 59, 26, 23);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/02, 236, 26, 148);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/26, 150, 58, 59);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/07/09, 346, 32, 11);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/17, 287, 52, 33);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/25, 487, 63, 30);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/11, 302, 7, 127);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/06, 11, 61, 109);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/09, 58, 19, 15);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/13, 256, 26, 114);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/28, 261, 26, 45);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/04, 484, 58, 133);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/07/04, 95, 70, 83);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/21, 329, 81, 10);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/19, 102, 55, 22);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/27, 3, 55, 99);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/08, 420, 54, 121);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/29, 154, 13, 97);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/08, 391, 19, 132);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/27, 420, 94, 22);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/15, 156, 89, 101);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/10, 127, 90, 75);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/13, 244, 100, 80);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/08, 220, 3, 133);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/23, 342, 67, 111);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/01, 154, 41, 34);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/17, 201, 37, 55);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/17, 446, 72, 111);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/21, 463, 50, 20);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/19, 381, 71, 81);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/07/09, 150, 90, 19);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/22, 253, 44, 88);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/16, 365, 77, 2);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/07/22, 386, 33, 69);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/05/06, 41, 25, 56);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/09, 125, 62, 11);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/03, 143, 28, 77);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/01, 353, 22, 86);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/17, 71, 54, 27);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/06/25, 470, 11, 145);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/09, 236, 97, 43);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/12, 418, 74, 36);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/11/10, 216, 47, 124);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/15, 101, 75, 82);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/02/08, 322, 29, 56);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/09/07, 206, 86, 58);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/11, 219, 73, 148);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/15, 385, 15, 121);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/06, 211, 87, 125);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/03, 49, 40, 44);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/12/11, 485, 67, 137);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/03/13, 352, 4, 133);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/04/22, 310, 6, 63);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/18, 463, 50, 25);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2018/01/07, 145, 26, 34);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/10/18, 236, 59, 127);
+insert into Entradas (fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) values (2017/08/11, 95, 33, 80);
+
+
+
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/07, 390, 71, 24);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/27, 354, 57, 53);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/19, 285, 22, 121);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/15, 196, 73, 81);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/11, 222, 52, 31);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/07, 367, 30, 95);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/30, 178, 57, 102);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/04, 337, 73, 12);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/25, 243, 22, 44);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/16, 331, 42, 145);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/21, 470, 5, 106);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/20, 253, 48, 49);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/11, 164, 68, 110);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/12, 494, 39, 10);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/22, 212, 1, 18);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/20, 119, 33, 132);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/23, 227, 79, 84);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/23, 26, 25, 26);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/10, 168, 97, 86);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/09, 225, 19, 112);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/10, 241, 50, 12);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/18, 415, 1, 139);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/17, 71, 15, 107);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/30, 252, 86, 128);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/25, 312, 93, 35);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/07/10, 58, 89, 18);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/26, 138, 63, 27);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/04/30, 453, 16, 4);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/11, 407, 74, 78);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/16, 214, 100, 18);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/10, 287, 43, 30);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/07, 422, 39, 91);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/24, 177, 52, 65);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/31, 95, 96, 130);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/20, 308, 74, 46);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/07, 224, 99, 136);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/09, 383, 13, 7);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/05, 67, 78, 84);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/30, 270, 54, 49);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/05, 278, 32, 98);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/04/24, 315, 34, 121);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/24, 194, 76, 42);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/14, 110, 90, 86);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/05, 272, 52, 117);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/13, 193, 96, 61);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/24, 325, 46, 93);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/15, 431, 65, 109);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/09, 9, 54, 32);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/18, 150, 86, 102);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/04, 209, 75, 74);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/20, 280, 38, 51);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/04/12, 409, 43, 12);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/21, 293, 78, 140);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/03, 98, 8, 53);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/24, 103, 89, 102);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/26, 333, 30, 125);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/14, 449, 15, 123);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/18, 184, 86, 118);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/07/01, 115, 47, 115);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/05, 46, 26, 83);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/16, 121, 93, 38);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/07/09, 1, 39, 98);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/29, 347, 16, 79);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/04/16, 267, 32, 115);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/17, 271, 1, 28);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/24, 56, 15, 97);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/25, 35, 3, 113);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/31, 456, 83, 16);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/28, 472, 40, 122);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/03, 260, 49, 112);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/30, 271, 77, 105);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/12, 461, 3, 48);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/05, 16, 68, 135);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/04, 63, 44, 79);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/25, 95, 15, 76);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/05, 264, 64, 12);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/05, 200, 45, 54);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/17, 17, 77, 116);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/28, 228, 61, 142);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/09, 236, 74, 40);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/08, 361, 13, 91);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/05, 210, 99, 139);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/13, 41, 63, 15);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/30, 28, 6, 22);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/28, 207, 18, 18);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/21, 26, 91, 110);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/08, 378, 39, 30);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/15, 461, 13, 118);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/02, 172, 95, 23);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/31, 319, 60, 127);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/16, 127, 5, 83);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/26, 415, 59, 31);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/10, 320, 76, 133);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/04/26, 419, 26, 110);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/18, 417, 44, 3);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/10, 312, 63, 4);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/24, 155, 37, 6);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/28, 458, 84, 53);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/13, 489, 13, 30);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/31, 41, 73, 25);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/22, 264, 65, 127);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/24, 274, 50, 130);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/03, 214, 6, 18);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/13, 435, 45, 101);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/04/27, 334, 67, 130);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/22, 176, 51, 84);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/18, 470, 99, 33);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/23, 407, 82, 67);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/10, 176, 52, 54);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/08, 137, 28, 7);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/30, 175, 64, 117);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/22, 203, 20, 143);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/20, 437, 68, 125);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/04/03, 156, 22, 115);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/24, 311, 48, 120);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/05, 305, 44, 95);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/09, 278, 10, 104);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/21, 418, 93, 71);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/23, 1, 28, 88);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/10, 442, 85, 36);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/21, 23, 45, 101);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/07, 143, 96, 54);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/02/21, 120, 87, 95);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/23, 360, 53, 143);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/30, 36, 56, 115);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/06/08, 179, 96, 45);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/28, 431, 81, 64);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/19, 303, 40, 135);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/16, 265, 87, 5);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/08, 342, 18, 97);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/31, 325, 12, 52);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/08, 186, 75, 20);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/08/14, 28, 53, 84);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/13, 356, 14, 140);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/15, 422, 57, 62);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/01/04, 66, 57, 49);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/05/13, 456, 25, 119);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/24, 274, 20, 30);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/13, 30, 38, 44);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/15, 275, 41, 87);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/17, 128, 26, 149);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/04, 367, 96, 7);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/11, 17, 73, 96);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/17, 82, 47, 42);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2018/03/26, 125, 40, 35);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/09/28, 162, 98, 88);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/07/22, 255, 26, 132);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/10/01, 342, 15, 128);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/11/29, 169, 37, 52);
+insert into Salidas (fecha_salida, refaccion_salida, cantidad_salida, almacen_salida) values (2017/12/23, 41, 2, 8);
+
+
+
+
+select * from devoluciones
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/16, 90, 65, 'nibh ligula');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/21, 58, 102, 'hendrerit');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/12, 106, 74, 'mattis pulvinar');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/09, 26, 139, 'hendrerit');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/26, 57, 43, 'et commodo');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/09, 140, 46, 'quis odio');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/12, 86, 63, 'volutpat');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/12, 149, 112, 'suspendisse potenti cras');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/15, 20, 48, 'nam ultrices');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/11, 105, 120, 'vestibulum quam sapien varius');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/09, 55, 1, 'vulputate vitae nisl');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/19, 48, 85, 'morbi sem mauris laoreet');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/23, 43, 107, 'morbi non lectus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/07/08, 51, 84, 'duis bibendum morbi non');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/24, 84, 15, 'pharetra magna vestibulum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/28, 125, 13, 'non mauris morbi non');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/11, 9, 66, 'orci luctus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/29, 84, 17, 'fringilla');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/13, 94, 83, 'ac tellus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/28, 96, 60, 'lacinia');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/24, 98, 34, 'mus vivamus vestibulum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/15, 136, 59, 'nulla');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/17, 97, 6, 'congue risus semper');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/21, 128, 103, 'arcu sed augue aliquam erat');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/29, 68, 50, 'sapien a libero nam dui');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/28, 16, 100, 'consequat nulla nisl nunc');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/11, 39, 138, 'quis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/01, 119, 120, 'non mi');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/04, 150, 148, 'orci luctus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/29, 63, 140, 'quam sapien varius ut blandit');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/12, 64, 102, 'morbi porttitor lorem id ligula');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/20, 22, 103, 'primis in faucibus orci');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/01/28, 139, 135, 'pellentesque eget nunc');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/03, 15, 43, 'ornare');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/20, 132, 11, 'luctus rutrum nulla tellus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/09, 29, 68, 'sem');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/20, 10, 62, 'nunc proin at turpis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/04, 149, 124, 'nisl nunc rhoncus dui');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/01, 110, 104, 'dolor');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/22, 105, 12, 'amet sapien dignissim');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/14, 87, 91, 'suspendisse potenti in');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/29, 139, 9, 'eu');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/02, 113, 124, 'sit');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/23, 36, 117, 'congue');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/16, 9, 105, 'nulla');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/01/14, 115, 90, 'nibh');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/07, 53, 77, 'porta volutpat quam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/18, 140, 126, 'vitae consectetuer eget rutrum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/19, 93, 127, 'justo morbi ut odio');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/08, 73, 47, 'duis at');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/30, 129, 86, 'massa id nisl venenatis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/01/10, 101, 117, 'leo maecenas');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/17, 58, 54, 'montes nascetur ridiculus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/30, 66, 94, 'volutpat convallis morbi odio odio');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/25, 126, 23, 'integer tincidunt ante vel ipsum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/26, 34, 48, 'ac lobortis vel dapibus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/05, 24, 123, 'posuere cubilia curae');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/02, 54, 93, 'consequat');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/30, 6, 133, 'magna vestibulum aliquet');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/18, 141, 93, 'in tempor turpis nec');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/25, 107, 48, 'orci mauris lacinia sapien quis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/06, 4, 64, 'montes');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/12, 103, 17, 'a suscipit');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/01/26, 75, 143, 'eget orci vehicula');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/10, 69, 39, 'eget orci');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/03, 1, 58, 'non mauris morbi non');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/26, 102, 73, 'accumsan tortor quis turpis sed');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/29, 119, 26, 'ultrices posuere cubilia curae');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/28, 139, 49, 'aliquam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/20, 85, 120, 'aliquam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/17, 7, 85, 'erat quisque erat eros viverra');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/07/10, 139, 17, 'sit amet justo morbi');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/07/11, 67, 70, 'vestibulum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/22, 126, 48, 'at');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/09, 88, 136, 'ante nulla justo');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/28, 113, 109, 'amet eleifend');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/28, 87, 89, 'cubilia');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/07, 39, 88, 'est phasellus sit');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/18, 38, 14, 'convallis nunc proin at turpis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/22, 68, 81, 'mauris eget massa');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/07/04, 147, 47, 'mauris laoreet');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/13, 146, 4, 'dis parturient');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/15, 49, 125, 'ante');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/18, 79, 133, 'non mattis pulvinar');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/11, 34, 13, 'tempus sit amet sem fusce');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/31, 90, 117, 'non');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/29, 43, 136, 'metus aenean fermentum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/15, 24, 18, 'sagittis dui vel nisl');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/22, 137, 53, 'amet lobortis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/29, 97, 19, 'libero convallis eget');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/04, 107, 12, 'tristique tortor');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/27, 85, 51, 'nisl ut volutpat sapien');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/09, 72, 94, 'pede ac diam cras pellentesque');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/01/21, 20, 75, 'lorem integer');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/29, 11, 122, 'nascetur');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/15, 42, 33, 'odio in hac habitasse platea');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/04, 46, 130, 'in est risus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/23, 51, 10, 'elementum nullam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/07/11, 65, 147, 'primis in faucibus orci luctus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/12, 133, 46, 'sapien sapien non mi integer');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/25, 53, 71, 'ultrices phasellus id sapien');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/13, 120, 91, 'nulla');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/19, 65, 32, 'at');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/11, 66, 41, 'duis faucibus accumsan odio curabitur');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/01/18, 45, 89, 'cubilia curae nulla dapibus');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/10, 138, 48, 'sed vel enim');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/12, 140, 26, 'a pede posuere');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/17, 96, 25, 'velit vivamus vel nulla eget');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/09, 105, 70, 'nam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/26, 111, 109, 'id lobortis convallis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/15, 51, 35, 'non lectus aliquam sit amet');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/06, 58, 36, 'dictumst maecenas');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/08, 66, 19, 'sollicitudin mi');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/26, 59, 14, 'lacus curabitur at');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/23, 125, 72, 'eu sapien');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/23, 23, 21, 'vulputate ut ultrices vel augue');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/18, 49, 26, 'tempor convallis');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/30, 10, 120, 'arcu sed augue aliquam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/04, 93, 119, 'amet justo');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/07/06, 139, 128, 'felis eu sapien cursus vestibulum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/26, 63, 78, 'morbi ut odio');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/28, 61, 22, 'quam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/14, 39, 42, 'nibh in hac');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/28, 139, 40, 'eros suspendisse');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/07/07, 38, 76, 'integer tincidunt');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/10/28, 22, 40, 'leo maecenas pulvinar lobortis est');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/28, 102, 87, 'ut');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/09, 46, 5, 'potenti in eleifend quam a');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/12, 42, 18, 'eget eros elementum');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/03/03, 63, 2, 'mauris laoreet ut');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/13, 90, 64, 'sem sed');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/08, 81, 64, 'pede ullamcorper augue');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/06, 111, 146, 'etiam');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/28, 32, 57, 'at feugiat');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/01/01, 145, 43, 'accumsan felis ut');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/09/22, 19, 90, 'augue');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/08/27, 80, 104, 'nec nisi vulputate');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/30, 28, 34, 'pede libero');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/07/17, 127, 91, 'nunc');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/06/05, 146, 19, 'curae nulla');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/03, 49, 13, 'curabitur gravida nisi at');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/04, 9, 3, 'parturient');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/16, 148, 46, 'ac leo');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/10, 124, 105, 'nec molestie sed');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/19, 78, 59, 'sapien');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/02/14, 61, 10, 'nunc');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/12/23, 118, 15, 'justo in hac habitasse');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2017/11/12, 66, 91, 'sem praesent id');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/22, 109, 35, 'nunc commodo placerat');
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/05/22, 47, 80, 'in congue etiam justo');
+
+
+
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast platinum batería', 67, 17, 3);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast gold batería', 36, 43, 33);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast batería', 98, 45, 89);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast platinum batería', 26, 41, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 23, 27, 72);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast gold batería', 81, 65, 77);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast platinum batería', 32, 88, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 82, 2, 76);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast gold batería', 28, 6, 91);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast batería', 21, 6, 64);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast batería', 25, 84, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería', 1, 83, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería', 7, 91, 68);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería', 9, 84, 41);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 63, 42, 61);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 96, 97, 49);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 69, 25, 70);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 69, 15, 24);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 75, 26, 32);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Optima batería', 86, 59, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería', 22, 49, 39);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast alternador', 15, 22, 18);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast alternador', 87, 39, 97);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast alternador', 1, 44, 61);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast alternador', 58, 37, 42);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast alternador', 84, 92, 98);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 37, 73, 30);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 17, 77, 39);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 76, 80, 98);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 84, 69, 77);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 78, 85, 122);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 81, 10, 7);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 54, 35, 47);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 36, 7, 200);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 22, 83, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast marcha', 95, 59, 37);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Lynx O.E batería-cable', 6, 32, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería-cable', 27, 35, 118);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería-cable', 45, 61, 71);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería-cable', 8, 2, 95);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft batería-cable', 59, 85, 80);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast terminal de batería', 74, 31, 54);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 87, 31, 162);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 62, 12, 93);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 72, 85, 180);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 19, 6, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 79, 25, 61);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 60, 19, 94);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 20, 41, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 31, 18, 64);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram ExtendedGaur filtro de aceite', 47, 88, 96);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Rear Limpiaparabrisas-hoja', 95, 87, 124);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Rear Limpiaparabrisas-hoja', 57, 36, 45);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Rear Limpiaparabrisas-hoja', 5, 81, 59);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Rear Limpiaparabrisas-hoja', 87, 59, 15);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Rear Limpiaparabrisas-hoja', 17, 37, 53);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin RadiusMex Limpiaparabrisas-hoja', 18, 85, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin RadiusMex Limpiaparabrisas-hoja', 65, 47, 3);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Optimus Limpiaparabrisas-hoja', 44, 71, 45);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Flex Limpiaparabrisas-hoja', 83, 93, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Optimus Limpiaparabrisas-hoja', 48, 32, 39);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Flex Limpiaparabrisas-hoja', 30, 6, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Flex Limpiaparabrisas-hoja', 45, 88, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast AeroBlad Limpiaparabrisas-hoja', 96, 99, 41);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Michelin Rainforo Limpiaparabrisas-hoja', 41, 48, 149);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Limpiaparabrisas-hoja', 98, 85, 188);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 30, 61, 77);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 23, 19, 7);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 91, 16, 7);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 79, 35, 89);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 49, 62, 49);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 83, 49, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 51, 8, 59);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 47, 83, 7);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Goodyear banda', 33, 26, 96);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Conti banda', 95, 25, 86);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Conti banda', 30, 27, 61);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Conti banda', 76, 62, 66);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast V Belt banda', 64, 9, 95);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast V Belt banda', 45, 63, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast V Belt banda', 1, 16, 86);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast cable para Bujias', 48, 46, 55);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast cable para Bujias', 44, 50, 51);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast cable para Bujias', 77, 27, 20);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast cable para Bujias', 79, 43, 66);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast cable para Bujias', 47, 94, 42);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft cables para Bujias', 29, 51, 43);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft cables para Bujias', 43, 37, 27);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft cables para Bujias', 90, 5, 32);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Gold cable para Bujias', 62, 70, 72);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Gold cable para Bujias', 65, 82, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram Filtro de combustible', 51, 2, 76);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram Filtro de combustible', 21, 42, 67);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram Filtro de combustible', 31, 48, 191);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('AZ Mex Filters', 93, 69, 3);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('AZ Mex Filters Filtro de combustible', 18, 84, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('AZ Mex Filters', 29, 60, 71);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('AZ Mex Filters filtro de combustible', 9, 51, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Fram Filtro de combustible', 2, 60, 65);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('AZ Mex Filters', 55, 83, 98);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('AZ Mex Filters filtro de combustible', 7, 5, 28);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast balatas', 16, 52, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast balatas', 71, 43, 84);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast balatas', 22, 48, 97);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast balatas', 19, 51, 46);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast balatas', 51, 70, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Gold balatas', 51, 78, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Gold balatas', 94, 4, 26);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Gold balatas', 100, 86, 77);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Gold balatas', 45, 41, 50);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Gold balatas', 28, 53, 89);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Tambor-freno (Trasero)', 15, 6, 38);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Tambor-freno (Trasero)', 52, 72, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Tambor-freno (Trasero)', 24, 63, 47);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Tambor-freno (Trasero)', 68, 96, 33);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Tambor-freno (Trasero)', 58, 20, 37);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Tambor-freno (Trasero)', 68, 48, 89);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Frenos de disco- juego de herrajes (Delanteros)', 36, 11, 95);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Frenos de disco- juego de herrajes (Delanteros)', 52, 35, 83);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Frenos de disco- juego de herrajes (Delanteros)', 100, 33, 7);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda - Cilindro Trasero (Freno)', 69, 47, 50);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda - Cilindro Trasero (Freno)', 55, 79, 14);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda - Cilindro Trasero (Freno)', 34, 35, 153);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda - Cilindro Trasero (Freno)', 22, 98, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda - Cilindro Trasero (Freno)', 54, 85, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda - Cilindro Trasero (Freno)', 23, 90, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Freno- Manguera', 90, 32, 84);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Freno- Manguera', 5, 10, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Freno- Manguera (Delantero)', 55, 69, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Freno- Manguera (Delantero)', 51, 7, 60);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Cardone Reman Freno- Booster/Servo/Amplificador', 48, 85, 49);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Cardone Reman Freno- Booster/Servo/Amplificador', 100, 42, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Cardone Reman Freno- Booster/Servo/Amplificador', 76, 86, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Cardone Reman Freno- Booster/Servo/Amplificador', 1, 44, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Cardone Reman Freno- Booster/Servo/Amplificador', 52, 65, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda- Cilindro', 70, 74, 13);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda- Cilindro', 55, 94, 81);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda- Cilindro', 90, 56, 92);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda- Cilindro', 35, 36, 81);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda- Cilindro', 11, 24, 71);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Brakeware Rueda- Cilindro', 1, 8, 92);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro', 87, 53, 6);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro', 55, 54, 180);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro', 94, 8, 22);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro', 1, 79, 88);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro - Sistema de frenos', 85, 73, 44);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro - Sistema de frenos', 96, 93, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro - Sistema de frenos', 16, 77, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro - Sistema de frenos', 80, 87, 4);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast New Cilindro Maestro - Sistema de frenos', 69, 9, 19);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 1, 42, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 62, 77, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 27, 22, 30);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 47, 55, 38);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 9, 92, 80);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 98, 53, 83);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 27, 12, 6);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 49, 95, 90);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 67, 67, 94);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Zapata Trasera', 14, 52, 98);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Eiko Faro / Bulbo Delantero', 35, 89, 21);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Eiko Faro / Bulbo Delantero', 12, 69, 39);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Eiko Faro / Bulbo Delantero', 4, 93, 1);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Eiko Faro / Bulbo Delantero', 32, 55, 43);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Eiko Faro / Bulbo Delantero', 69, 33, 98);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Eiko Faro / Bulbo Delantero', 16, 13, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Faro / Vulvo Delantero', 80, 93, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Eiko Faro / Bulbo Delantero', 1, 35, 30);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Faro / Vulvo Delantero', 52, 57, 5);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Faro / Vulvo Delantero', 43, 30, 20);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Faro / Vulvo Delantero', 92, 23, 3);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 26, 51, 33);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 96, 21, 146);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 16, 53, 33);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 69, 70, 65);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 34, 43, 169);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 6, 58, 14);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 16, 41, 42);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 96, 52, 58);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 91, 81, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Philips Faro / Bulbo Delantero', 22, 43, 64);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero LED Faro / Bulbo Delantero', 35, 90, 2);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero LED Faro / Bulbo Delantero', 10, 95, 92);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero LED Faro / Bulbo Delantero', 61, 52, 23);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero LED Faro / Bulbo Delantero', 28, 18, 16);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero LED Faro / Bulbo Delantero', 7, 66, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero Xenon Faro / Bulbo Delantero', 4, 27, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero Xenon Faro / Bulbo Delantero', 69, 92, 97);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero Xenon Faro / Bulbo Delantero', 17, 26, 30);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero Xenon Faro / Bulbo Delantero', 15, 13, 49);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero Xenon Faro / Bulbo Delantero', 25, 95, 83);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero Xenon Faro / Bulbo Delantero', 39, 83, 63);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kumero Xenon Faro / Bulbo Delantero', 2, 35, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Moto Vision Faro / Bulbo Delantero', 10, 10, 24);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Moto Vision Faro / Bulbo Delantero', 75, 53, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Moto Vision Faro / Bulbo Delantero', 64, 91, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Moto Vision Faro / Bulbo Delantero', 69, 36, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Moto Vision Faro / Bulbo Delantero', 61, 46, 8);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Puerta - Actuador de Seguro Eléctrico', 20, 36, 95);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Puerta - Actuador de Seguro Eléctrico', 27, 69, 21);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Puerta - Actuador de Seguro Eléctrico', 5, 25, 40);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Puerta - Actuador de Seguro Eléctrico', 39, 39, 110);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Puerta - Actuador de Seguro Eléctrico', 5, 80, 5);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Actuador de Seguro Eléctrico', 38, 22, 53);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Actuador de Seguro Eléctrico', 16, 39, 3);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Actuador de Seguro Eléctrico', 53, 9, 35);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Actuador de Seguro Eléctrico', 95, 3, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Actuador de Seguro Eléctrico', 10, 33, 13);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Actuador de Seguro Eléctrico', 46, 62, 46);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Actuador de Seguro Eléctrico', 1, 33, 82);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 50, 41, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 57, 25, 24);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 30, 99, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 99, 78, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 29, 55, 56);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 86, 6, 46);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 57, 39, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 55, 23, 93);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 29, 61, 41);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 45, 5, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast soporte de Motor', 17, 54, 52);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 42, 33, 24);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 46, 97, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 83, 90, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 35, 73, 88);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 94, 93, 92);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 89, 37, 38);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 58, 2, 62);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 98, 51, 32);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Ventana - Motor (Eléctrica)', 3, 97, 94);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 70, 75, 81);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 88, 94, 16);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 85, 20, 50);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 62, 8, 13);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 43, 45, 93);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 84, 50, 54);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 44, 72, 150);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 25, 83, 40);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 79, 19, 76);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 2, 38, 63);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 30, 15, 17);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 32, 35, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 48, 42, 48);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 10, 98, 99);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 39, 5, 26);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Espejo - Ensamble Completo', 31, 6, 132);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Faro Delantero', 99, 97, 47);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Faro Delantero', 56, 6, 78);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Faro Delantero', 100, 15, 29);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Faro Delantero', 88, 70, 79);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Faro Delantero', 49, 12, 60);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo', 30, 86, 70);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo', 77, 20, 111);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo', 72, 59, 138);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo', 67, 84, 3);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo', 33, 16, 82);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo', 18, 93, 46);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo', 29, 20, 14);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 46, 76, 56);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 53, 94, 3);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 41, 28, 98);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 80, 2, 58);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 81, 23, 79);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 37, 89, 79);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 19, 45, 76);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 76, 28, 65);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 20, 87, 52);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 22, 88, 96);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman HELP! Espejo - Vidrio de Repuesto', 10, 117, 40);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 17, 116, 99);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 21, 98, 15);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 86, 96, 20);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 80, 100, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 91, 146, 30);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 84, 15, 49);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 95, 53, 32);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 51, 145, 96);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 1, 85, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 90, 52, 28);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 49, 17, 39);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica trasera', 91, 77, 28);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 73, 83, 34);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 99, 96, 54);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 12, 100, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 31, 35, 26);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 23, 34, 91);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 81, 139, 32);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 55, 96, 18);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('DEPO Ensamble de mica ', 25, 52, 48);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 36, 129, 22);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 14, 76, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 8, 23, 1);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 94, 99, 190);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 32, 83, 139);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 16, 47, 99);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 85, 60, 53);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 51, 12, 2);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Manija - Puerta (Exterior)', 64, 5, 10);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Deposito Recuperador de Refrigerante del Radiador', 98, 10, 20);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Deposito Recuperador de Refrigerante del Radiador', 29, 67, 1);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Deposito Recuperador de Refrigerante del Radiador', 54, 25, 168);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Deposito Recuperador de Refrigerante del Radiador', 49, 86, 112);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Deposito Recuperador de Refrigerante del Radiador', 37, 3, 49);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Deposito Recuperador de Refrigerante del Radiador', 7, 26, 27);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Deposito Recuperador de Refrigerante del Radiador', 35, 61, 35);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio', 23, 127, 194);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio', 41, 76, 134);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio', 98, 90, 181);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio', 14, 83, 168);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio', 71, 148, 123);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio', 29, 80, 45);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio (cilindro y llaves)', 48, 34, 55);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio (cilindro y llaves)', 38, 115, 67);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio (cilindro y llaves)', 81, 74, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio (cilindro y llaves)', 14, 99, 83);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio (cilindro y llaves)', 12, 14, 46);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio (cilindro y llaves)', 2, 98, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Locksmart Cerradura - Ignicio (cilindro y llaves)', 7, 82, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura', 83, 72, 166);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura', 98, 4, 90);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura', 67, 51, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura', 31, 92, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura', 70, 100, 75);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura', 17, 134, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura (cilindro y llaves)', 67, 77, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura (cilindro y llaves)', 61, 85, 155);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura (cilindro y llaves)', 62, 79, 191);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura (cilindro y llaves)', 3, 131, 9);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura (cilindro y llaves)', 82, 2, 42);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura (cilindro y llaves)', 33, 96, 17);
+insert into refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Valucraft Cerradura (cilindro y llaves)', 94, 31, 15);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 44, 72, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 2, 86, 76);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 41, 60, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 6, 138, 35);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 51, 14, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 74, 90, 178);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 19, 27, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 94, 11, 187);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 56, 62, 77);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 80, 83, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 77, 84, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 16, 9, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kraco Cubreasientos', 74, 122, 86);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kraco Cubreasientos', 19, 75, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kraco Cubreasientos', 58, 7, 92);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kraco Cubreasientos', 72, 69, 58);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kraco Cubreasientos', 80, 62, 79);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Kraco Cubreasientos', 16, 131, 34);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 28, 19, 48);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 23, 38, 76);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 89, 141, 5);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Xcar Cubreasientos', 34, 11, 72);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Matrix Cubreasientos', 92, 52, 46);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Matrix Cubreasientos', 71, 98, 59);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Matrix Cubreasientos', 66, 35, 35);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Matrix Cubreasientos', 9, 76, 29);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Matrix Cubreasientos', 69, 54, 78);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Matrix Cubreasientos', 54, 28, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 44, 149, 71);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 32, 57, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ( 'ProElite Cubreasientos', 45, 48, 19);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('ProElite Cubreasientos', 64, 150, 51);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 17, 28, 19);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 83, 100, 17);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 60, 40, 89);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 61, 96, 41);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 31, 55, 89);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 69, 30, 37);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 42, 79, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dickies Cubreasientos', 86, 82, 11);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('PlastiColor Cubreasientos', 64, 76, 57);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('PlastiColor Cubreasientos', 22, 3, 71);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('PlastiColor Cubreasientos', 5, 19, 78);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('PlastiColor Cubreasientos', 70, 39, 110);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('PlastiColor Cubreasientos', 62, 32, 77);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Manija Interior', 50, 70, 82);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Manija Interior', 62, 51, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Manija Interior', 26, 19, 92);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Manija Interior', 8, 6, 183);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Manija Interior', 80, 38, 115);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Puerta - Manija Interior', 51, 44, 79);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 67, 91, 60);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 70, 54, 7);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 1, 54, 81);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 100, 70, 39);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 70, 46, 90);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 14, 76, 6);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 91, 39, 70);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Espejo Retrovisor', 33, 21, 61);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad', 37, 88, 29);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad', 79, 52, 60);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad', 63, 37, 5);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad', 56, 72, 84);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad', 35, 17, 58);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad', 20, 48, 70);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad Universal', 74, 139, 88);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad Universal', 66, 32, 25);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad Universal', 56, 1, 2);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad Universal', 80, 89, 77);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad Universal', 89, 88, 53);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Cinturon de Seguridad Universal', 3, 82, 93);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Cambio de Velocidades - Botón', 98, 2, 97);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Cambio de Velocidades - Botón', 41, 78, 68);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Cambio de Velocidades - Botón', 1, 140, 13);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Cambio de Velocidades - Botón', 59, 11, 47);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Cambio de Velocidades - Botón', 28, 85, 98);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Cambio de Velocidades - Botón', 75, 10, 43);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Almohadilla para Pedal de Freno', 81, 99, 64);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Almohadilla para Pedal de Freno', 18, 67, 50);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Almohadilla para Pedal de Freno', 9, 80, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Almohadilla para Pedal de Freno', 55, 61, 95);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Almohadilla para Pedal de Freno', 12, 7, 50);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Puerta - Perilla de cerradura', 62, 82, 96);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Puerta - Perilla de cerradura', 83, 14, 35);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Puerta - Perilla de cerradura', 25, 30, 34);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Puerta - Perilla de cerradura', 34, 114, 13);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Puerta - Perilla de cerradura', 71, 112, 5);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Puerta - Perilla de cerradura', 47, 10, 80);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Automotive Puerta - Perilla de cerradura', 72, 58, 91);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Puerta - Perilla de cerradura', 31, 7, 24);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Puerta - Perilla de cerradura', 11, 82, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Puerta - Perilla de cerradura', 43, 46, 11);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Puerta - Perilla de cerradura', 95, 44, 33);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Puerta - Perilla de cerradura', 70, 71, 19);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Puerta - Perilla de cerradura', 21, 62, 70);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Perilla - Control de calentador HVAC', 16, 8, 33);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Perilla - Control de calentador HVAC', 76, 59, 27);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Perilla - Control de calentador HVAC', 48, 46, 13);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Perilla - Control de calentador HVAC', 83, 22, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Help Perilla - Control de calentador HVAC', 86, 49, 14);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('HELP Perilla de Interruptor para Faro', 71, 56, 76);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('HELP Perilla de Interruptor para Faro', 100, 57, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('HELP Perilla de Interruptor para Faro', 69, 1, 60);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('HELP Perilla de Interruptor para Faro', 58, 43, 56);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('HELP Perilla de Interruptor para Faro', 34, 136, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Hebilla del Cinturón de Seguridad', 19, 122, 26);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Hebilla del Cinturón de Seguridad', 76, 77, 81);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Hebilla del Cinturón de Seguridad', 83, 1, 72);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Hebilla del Cinturón de Seguridad', 80, 51, 70);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Hebilla del Cinturón de Seguridad', 29, 21, 23);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Dorman Hebilla del Cinturón de Seguridad', 20, 92, 54);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast MAS Rotula - Inferior', 47, 144, 19);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast MAS Rotula - Inferior', 75, 4, 70);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast MAS Rotula - Inferior', 79, 150, 11);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast MAS Rotula - Inferior', 52, 32, 96);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast MAS Rotula - Inferior', 15, 2, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt', 3, 127, 140);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt', 34, 26, 100);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt', 2, 85, 63);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Delantero)', 14, 30, 65);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Delantero)', 30, 96, 54);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Delantero)', 35, 34, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Delantero)', 70, 15, 87);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Delantero)', 74, 69, 10);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Trasero)', 50, 64, 45);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Trasero)', 41, 122, 99);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Amortiguador - Sturt (Trasero)', 53, 56, 65);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Manguera / Línea de Presión de Dirección Hidraulica', 4, 128, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Manguera / Línea de Presión de Dirección Hidraulica', 33, 9, 86);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Manguera / Línea de Presión de Dirección Hidraulica', 84, 141, 63);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Manguera / Línea de Presión de Dirección Hidraulica', 94, 64, 7);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Cableado Eléctrico', 43, 1, 41);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Cableado Eléctrico', 30, 81, 56);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Cableado Eléctrico', 95, 83, 68);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Cableado Eléctrico', 59, 28, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Cableado Eléctrico', 55, 10, 72);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Cableado Eléctrico', 87, 52, 4);
+insert into refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Aotomotive Luz para Conducir', 89, 7, 15);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Aotomotive Luz para Conducir', 11, 71, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Aotomotive Luz para Conducir', 2, 17, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Aotomotive Luz para Conducir', 43, 53, 90);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Pilot Aotomotive Luz para Conducir', 81, 40, 81);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Luz para conducir', 78, 76, 86);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Luz para conducir', 20, 70, 79);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Blazer Luz para conducir', 64, 111, 12);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Mofle/Silenciador', 34, 27, 26);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Mofle/Silenciador', 7, 17, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Mofle/Silenciador', 64, 95, 84);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Convertidor Catalico', 11, 9, 29);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Convertidor Catalico', 58, 110, 95);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Convertidor Catalico', 90, 97, 74);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Convertidor Catalico', 65, 84, 27);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('EMSA Convertidor Catalico', 80, 46, 19);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('MagnaFlow Convertidor Catalico', 1, 14, 58);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('MagnaFlow Convertidor Catalico', 29, 81, 56);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('MagnaFlow Convertidor Catalico', 18, 11, 26);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('MagnaFlow Convertidor Catalico', 76, 36, 16);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('MagnaFlow Convertidor Catalico', 59, 65, 67);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Oxigeno / Sensor', 75, 70, 71);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Oxigeno / Sensor', 20, 4, 22);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Oxigeno / Sensor', 64, 5, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Oxigeno Sensor', 59, 94, 72);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Oxigeno Sensor', 37, 62, 69);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Nickson Abrazadera - Escape', 61, 38, 21);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Nickson Abrazadera - Escape', 93, 86, 31);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Nickson Abrazadera - Escape', 79, 63, 85);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Empaque de Multiple de Escape', 61, 54, 36);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Empaque de Multiple de Escape', 65, 47, 73);
+insert into Refacciones (descripcion_refaccion, existencias_refaccion, catalogo_refaccion, proveedor_refaccion) values ('Duralast Empaque de Multiple de Escape', 82, 61, 58);
+
+--------------------------------------
+select * from Marcas
+select * from Vehiculos
+select * from Anios
+select * from Modelos
+select * from Catalogos
+select * from Tipo_motores
+select * from Refacciones
+select * from SubCategorias
+select * from Categorias
+select * from Salidas
+select * from Devoluciones
+select * from Proveedores
+select * from Almacenes
+select * from Entradas
+select * from Ciudades
+select * from Estados
+select * from usuarios
+
+select folio_refaccion, descripcion_refaccion, existencias_refaccion, catalogo_refaccion, nombre_proveedor from refacciones as r inner join proveedores on r.proveedor_refaccion=proveedores.id_proveedor
+
+create trigger TG_actualizar_existencias_entrada on Entradas for insert as
+begin
+	DECLARE @cantidadEntrada as int= (select cantidad_entrada from inserted)
+	DECLARE @noRefaccion as int= (select refaccion_entrada from inserted)
+	update Refacciones set existencias_refaccion=existencias_refaccion+@cantidadEntrada where folio_refaccion=@noRefaccion;
+	print 'Se han actualizado existencias por entrada';
+end
+
+create trigger TG_actualizar_existencias_salida on Salidas for insert as
+begin
+	DECLARE @cantidadSalida as int= (select cantidad_salida from inserted)
+	DECLARE @noRefaccion as int= (select refaccion_salida from inserted)
+	update Refacciones set existencias_refaccion=existencias_refaccion-@cantidadSalida where folio_refaccion=@noRefaccion;
+	print 'Se han actualizado existencias por salida';
+end
+
+create trigger TG_actualizar_existencias_devoluciones on Devoluciones for insert as
+begin
+	DECLARE @noSalida as int= (select salida_devolucion from inserted)
+	DECLARE @cantidadSalida as int= (select cantidad_salida from Salidas where folio_salida=@noSalida)
+	DECLARE @noRefaccion as int= (select refaccion_salida from Salidas where folio_salida=@noSalida)
+	update Refacciones set existencias_refaccion=existencias_refaccion+@cantidadSalida where folio_refaccion=@noRefaccion;
+	delete from Salidas where folio_salida=@noSalida;
+	print 'Se han actualizado existencias por devolucion';
+end
+
+select * from Refacciones;
+select * from entradas;
+select * from salidas;
+select * from Devoluciones;
+
+insert into Entradas (fecha_entrada,refaccion_entrada,cantidad_entrada,almacen_entrada) values (2018-07-18,1,20,80)
+insert into Salidas (fecha_salida,refaccion_salida,cantidad_salida,almacen_salida) values (2018-07-18,1,10,80)
+insert into Devoluciones (fecha_devolucion, salida_devolucion, almacen_devolucion, observacion_devolucion) values (2018/04/12, 151, 80, 'Prueba trigger xde');
