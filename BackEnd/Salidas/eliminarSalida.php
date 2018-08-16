@@ -5,21 +5,14 @@
 	ECHO "folio_salida a eliminar: ".$folio_salida."</BR>";
 	
 	
-	$servername = "localhost";
-	$username = "root";
-	$password = "usbw";
-	$database = "proyectosinaloense";
-	
-	$conexion = mysqli_connect($servername, $username, $password, $database);
+	include("../conexion.php");
 	$bandera_conexion = true;
 	
 	if ($conexion){
-		 ECHO "Conexión exitosa (:<BR>";
-		 ECHO "Ejecutando consulta <BR>";
-		$query="DELETE FROM Salidas WHERE folio_salida= ".$folio_salida."";
-		//2.2 Ejecutar la consulta
-		ECHO $query. "<BR>";
-		$resultados=mysqli_query($conexion, $query);
+		$param=array(
+			array(&$folio_salida)
+		);
+		$resultados=sqlsrv_query($conexion, "exec spEliminarSalida @folio=?",$param);
 		
 		//2.3 Validar la ejecución
 		$banderaconsulta= true;
@@ -32,7 +25,7 @@
 		
 		if($banderaconsulta==true){
 			ECHO "Refrescando página post-eliminación <BR>";
-			header("Refresh:5 url=http://localhost:8080/ProyectoSinoaloense/Salidas/consultasSalida.php");
+			header("Location: consultasSalida.php");
 		}else{
 			ECHO "No se imprimirán resultados <BR>";
 		}

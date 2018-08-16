@@ -1,27 +1,147 @@
-<HTML>
-	<HEAD>
-		<TITLE> consultas </TITLE>
-	</HEAD>
-	<BODY>
-		<H1> C O N S U L T A S    D E V O L U C I O N </H1>
+<?php
+	header("Content-Type: text/html;charset=iso-8859-1");
+?>
+<html lang="es">
+	<head>
+	    <!--GENERA TODO EL CSS PARA QUE TOME FORMA Y NO SOLO SEA HTML-->
+		<link rel="stylesheet" type="text/css" href="../Sinaloense_files/STB.css">
+		<!-- GENERA UN BOTON CUANDO LA PANTALLA SE HACE MAS PEQUEÑA Y MUESTRA LA BARRA PRINCIPAL-->
+		<link href="../Sinaloense_files/css.css" rel="stylesheet" type="text/css">
+		<script src="../Sinaloense_files/jquery-latest.js.descarga"></script>
+		<script src="../Sinaloense_files/main.js.descarga"></script>
+		<link rel="stylesheet" type="text/css" href="../Sinaloense_files/datatables.min.css"/>
+    	<script type="text/javascript" src="../Sinaloense_files/datatables.min.js"></script>
+		<script>
+			$(document).ready(function () {
+    			$('#tabla').DataTable( {
+					"language": {
+						"lengthMenu": "Mostrando _MENU_ registros por pagina",
+						"zeroRecords": "Nada por aquí :(",
+						"info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+						"infoEmpty": "No hay registros disponibles",
+						"infoFiltered": "(Filtrados de _MAX_ registros totales)",
+						"search": "Buscar: ",
+						"paginate" : {
+							"previous": "Anterior",
+							"next": "Siguiente"
+						}
+					}
+    			} );
+			} );
+		</script>
+
+</head>
+	<body>
+	<header class="h-body_bajo">
+		<div class="logo"><img src="../Sinaloense_files/logo.png"></div>
+		
+		<div class="menu_bar">
+				<a class="bt-menu"><img src="../Sinaloense_files/circular-menu-button.png"></a>
+				
+	</div>
+	</header>
+	<nav>
+		<ul>
+	        <li><a href="../../FrontEnd/login_pass.php"><span class="icon-earth"></span>Inicio</a></li>   <!-- pagina del index-->
+		    <div class="dropdown">
+				<button class="dropbtn">Usuarios</button>
+				<div class="dropdown-content">
+					<a href="../Usuarios/form_usuarios.php">Registrar Usuario</a>
+					<a href="../Usuarios/consultarUsuario.php">Consultar Usuarios</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Marcas</button>
+				<div class="dropdown-content">
+					<a href="../Marcas/form_marca.php">Insertar Marca</a>
+					<a href="../Marcas/consultMarcas.php">Consultar Marcas</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Refacciones</button>
+				<div class="dropdown-content">
+					<a href="../Refacciones/form_refacciones.php">Insertar Refaccion</a>
+					<a href="../Refacciones/consultasRefacciones.php">Consultar Refacciones</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">A&ntilde;os</button>
+				<div class="dropdown-content">
+					<a href="../Anios/Form_anio.php">Insertar a&ntilde;o</a>
+					<a href="../Anios/consultasAnio.php">Consultar a&ntilde;os</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Catalogos</button>
+				<div class="dropdown-content">
+					<a href="../Catalogos/Form_Catalogo.php">Insertar Catalago</a>
+					<a href="../Catalogos/consultasCatalogo.php">Consultar Catalagos</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Categorias</button>
+				<div class="dropdown-content">
+					<a href="../Categorias/Form_categoria.php">Insertar categoria</a>
+					<a href="../Categorias/consutasCategoria.php">Consultar categorias</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Modelos</button>
+				<div class="dropdown-content">
+					<a href="../Modelos/Form_modelo.php">Insertar modelo</a>
+					<a href="../Modelos/consultasModelo.php">Consultar modelos</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Proveedores</button>
+				<div class="dropdown-content">
+					<a href="../Proveedores/Form_Proveedor.php">Insertar proveedor</a>
+					<a href="../Proveedores/consultasProveedor.php">Consultar proveedores</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Subcategorias</button>
+				<div class="dropdown-content">
+					<a href="../SubCategoria/Form_SubCat.php">Insertar subcategor&iacute;a</a>
+					<a href="../SubCategoria/consultasSubCat.php">Consultar subcategor&iacute;as</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Vehiculos</button>
+				<div class="dropdown-content">
+					<a href="../Vehiculos/Form_Vehiculo.php">Insertar veh&iacute;culo</a>
+					<a href="../Vehiculos/consultasVehiculo.php">Consultar veh&iacute;culos</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Operaciones</button>
+				<div class="dropdown-content">
+					<a href="../Devoluciones/Form_Devolucion.php">Registrar devoluciones</a>
+					<a href="../Devoluciones/consultasDevolucion.php">Consultar devoluciones</a>
+					<a href="../Entradas/Form_Entrada.php">Registrar entrada</a>
+					<a href="../Entradas/consultasEntrada.php">Consultar entradas</a>
+					<a href="../Salidas/Form_Salidas.php">Registrar salida</a>
+					<a href="../Salidas/consultasSalida.php">Consultar salidas</a>
+				</div>
+			</div>
+	    </ul>
+	</nav>
+	
+	<div class="fondo123">
+		<div class="container"> 
+			<ul class="two-rows">
+			
+			</ul>
+			<div style="display: none">
+			<H1> C O N S U L T A S    D E V O L U C I O N </H1>
 	
 		<?PHP
-			$servername = "localhost";
-			$username = "root";
-			$password = "usbw";
-			$database = "proyectosinaloense";
-			
-			$conexion = mysqli_connect($servername, $username, $password, $database);
-			$bandera_conexion = true;
+			include("../conexion.php");
+			$banderaconexion = true;
 			
 			if ($conexion) {//si hubo conexion
-				ECHO "Conexion Exitosa <BR>";
-				ECHO "Ejecutando consulta <BR>";
-				//2.1 Estableciendo la consulta a ejecutará
-				$query="SELECT * FROM Devoluciones";
-				//2.2 Ejecutar la consulta
-				ECHO $query. "<BR>";
-				$resultado = mysqli_query($conexion, $query);
+				
+				$resultado = sqlsrv_query($conexion, "exec spSeleccionarDevolucion");
 				//2.3 VALIDAR LA EJECUCIÓN
 				$banderaconsulta = true;
 				if ($resultado){
@@ -46,39 +166,65 @@
 
 			ECHO "<H1> Lista de registros </H1>";
 			//3. Imprimiendo registros
-			ECHO "<TABLE BORDER =1 frame=below>";
-				ECHO "<TH> folio_devolucion </TH>";
-				ECHO "<TH> fecha_devolucion </TH>";
-				ECHO "<TH> salida_devolucion </TH>";
-				ECHO "<TH> almacen_devolucion </TH>";
-				ECHO "<TH> observacion_devolucion </TH>";
+			ECHO "</div>";
+			ECHO "<TABLE BORDER =1 frame=below id='tabla'>";
+			ECHO "<THEAD>";
+				ECHO "<TH hidden> folio_devolucion </TH>";
+				ECHO "<TH> Fecha </TH>";
+				ECHO "<TH> Salida </TH>";
+				ECHO "<TH> Almacen </TH>";
+				ECHO "<TH> Observacion </TH>";
 				ECHO "<TH> Modificar </th>";
 				ECHO "<TH> Eliminar </th>";
+			ECHO "</THEAD>";
 				
 				//3.1 Implementando el ciclo for 
-				
-				while ($i=$row=mysqli_fetch_array($resultado, MYSQLI_ASSOC)){
+			ECHO "<TBODY>";
+				while ($i=$row=sqlsrv_fetch_array($resultado, SQLSRV_FETCH_ASSOC)){
 					//3.2 Atrapar los indices
 					$folio_devolucion = $row['folio_devolucion'];
 					$fecha_devolucion = $row ['fecha_devolucion'];
-					$salida_devolucion = $row ['salida_devolucion'];
+					$folio_salida = $row ['folio_salida'];
+					$descripcion_refaccion = $row ['descripcion_refaccion'];
+					$cantidad_salida = $row ['cantidad_salida'];
 					$almacen_devolucion = $row ['almacen_devolucion'];
 					$observacion_devolucion = $row ['observacion_devolucion'];
 					
 					//3.3 Imprimir resutados
 					ECHO "<TR>";
-						ECHO "<TD>".$folio_devolucion."</TD>";
-						ECHO "<TD>".$fecha_devolucion."</TD>";
-						ECHO "<TD>".$salida_devolucion."</TD>";
+						ECHO "<TD hidden>".$folio_devolucion."</TD>";
+						ECHO "<TD>".date_format($fecha_devolucion, 'Y-m-d')."</TD>";
+						ECHO "<TD> #".$folio_salida." ".$descripcion_refaccion." con ".$cantidad_salida." unidades</TD>";
 						ECHO "<TD>".$almacen_devolucion."</TD>";
 						ECHO "<TD>".$observacion_devolucion."</TD>";
-						ECHO "<TD> <a href='form_modif.php?folio_devolucion=".$folio_devolucion ."&fecha_devolucion=".$fecha_devolucion."&salida_devolucion=".$salida_devolucion."&almacen_devolucion=".$almacen_devolucion."&observacion_devolucion=".$observacion_devolucion."'>Modificar </a></td>";
-						echo "<TD> <a href='eliminarDevolucion.php?folio_devolucion=".$folio_devolucion."'>Eliminar </a></td>";
+						ECHO "<TD> <a href='form_modif.php?folio_devolucion=".$folio_devolucion ."&fecha_devolucion=".date_format($fecha_devolucion, 'Y-m-d')."&salida_devolucion=".$folio_salida."&almacen_devolucion=".$almacen_devolucion."&observacion_devolucion=".$observacion_devolucion."'><img src='../Sinaloense_files/modificar.png'></a></td>";
+						echo "<TD> <a href='eliminarDevolucion.php?folio_devolucion=".$folio_devolucion."'><img src='../Sinaloense_files/eliminar.png'></a></td>";
 					ECHO "</TR>";
 				}
+				ECHO "</TBODY>";
 					
 			ECHO "</TABLE>";
 		?>
-
-	</BODY>
-</HTML>
+		<br>
+		<br>
+		<br>
+		<a href="Form_Devolucion.php">Insertar nuevo registro</a>
+		  	
+		</div> 
+	</div>
+	<footer class="h-body_bajo">
+		<div class="container">
+			<ul class="horizontal">
+				<li style="font-size:22px">Síguenos a través de las redes sociales:&nbsp;&nbsp;&nbsp; </li>
+				<li><a href="https://www.facebook.com/CAJC3"><img src="../Sinaloense_files/fb_icon.png" alt=""></a></li>
+				<li><a href="https://twitter.com/"><img src="../Sinaloense_files/twitter_icon.png" alt=""></a></li>
+				
+			</ul>
+			<br>
+			<br>
+			<br>
+			<br>
+		</div>
+	</footer>
+	</body>
+</html>

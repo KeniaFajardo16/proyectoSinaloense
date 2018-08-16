@@ -1,8 +1,8 @@
 <?PHP
-	$fecha_entrada = $_POST["fecha_entrada"];
-	$refaccion_entrada = $_POST["refaccion_entrada"];
-	$cantidad_entrada = $_POST["cantidad_entrada"];
-	$almacen_entrada = $_POST["almacen_entrada"];
+	echo $fecha_entrada = $_POST["fecha_entrada"];
+	echo "<br>".$refaccion_entrada = $_POST["refaccion_entrada"];
+	echo "<br>".$cantidad_entrada = $_POST["cantidad_entrada"];
+	echo "<br>".$almacen_entrada = $_POST["almacen_entrada"];
 		
 	include("../conexion.php");
 	$banderaconexion = true;

@@ -205,7 +205,7 @@
 		<br>
 		<br>
 		<br>
-		<a href="Form_Salidas.php">Insertar nuevo registro</a>
+		<a href="Form_Entrada.php">Insertar nuevo registro</a>
 		  	
 		</div> 
 	</div>

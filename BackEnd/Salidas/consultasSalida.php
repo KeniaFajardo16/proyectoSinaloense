@@ -133,11 +133,11 @@
 			
 			</ul>
 			<div style="display: none">
-			<H1>Consulta salidas</H1>
+			<H1> C O N S U L T A S    ENTRADAS </H1>
 	
 			<?PHP
 				include("../conexion.php");
-				$bandera_conexion = true;
+				$banderaconexion = true;
 				
 				if ($conexion) {//si hubo conexion
 					$resultado = sqlsrv_query($conexion, "exec spSeleccionarSalida");
@@ -165,14 +165,14 @@
 
 				ECHO "<H1> Lista de registros </H1>";
 				//3. Imprimiendo registros
-				ECHO "</DIV>";
+				ECHO "</div>";
 				ECHO "<TABLE BORDER =1 frame=below id='tabla'>";
 					ECHO "<THEAD>";
-					ECHO "<TH hidden> folio_salida </TH>";
-					ECHO "<TH> Fecha </TH>";
-					ECHO "<TH> Refaccion </TH>";
-					ECHO "<TH> Cantidad </TH>";
-					ECHO "<TH> Almacen </TH>";
+					ECHO "<TH hidden> folio_entrada </TH>";
+					ECHO "<TH> Fecha salida </TH>";
+					ECHO "<TH> Refaccion salida </TH>";
+					ECHO "<TH> Cantidad salida </TH>";
+					ECHO "<TH> Almacen salida </TH>";
 					ECHO "<TH> Modificar </th>";
 					ECHO "<TH> Eliminar </th>";
 					ECHO "</THEAD>";
@@ -192,10 +192,10 @@
 							ECHO "<TD hidden>".$folio_salida."</TD>";
 							ECHO "<TD>".date_format($fecha_salida, 'Y-m-d')."</TD>";
 							ECHO "<TD>".$refaccion_salida."</TD>";
-							ECHO "<TD>".$cantidad_salida."</TD>";
+							ECHO "<TD>".$cantidad_salida." unidades</TD>";
 							ECHO "<TD>".$almacen_salida."</TD>";
 							ECHO "<TD> <a href='form_modif.php?folio_salida=".$folio_salida ."&fecha_salida=".date_format($fecha_salida, 'Y-m-d')."&refaccion_salida=".$refaccion_salida."&cantidad_salida=".$cantidad_salida."&almacen_salida=".$almacen_salida."'><img src='../Sinaloense_files/modificar.png'></a></td>";
-							echo "<TD> <a href='eliminarSalida.php?folio_salida=".$folio_salida."'><img src='../Sinaloense_files/modificar.png'></a></td>";
+							echo "<TD> <a href='eliminarSalida.php?folio_salida=".$folio_salida."'><img src='../Sinaloense_files/eliminar.png'></a></td>";
 						ECHO "</TR>";
 					}
 					ECHO "</TBODY>";
@@ -205,7 +205,7 @@
 		<br>
 		<br>
 		<br>
-		<a href="Form_Entrada.php">Insertar nuevo registro</a>
+		<a href="Form_Salidas.php">Insertar nuevo registro</a>
 		  	
 		</div> 
 	</div>

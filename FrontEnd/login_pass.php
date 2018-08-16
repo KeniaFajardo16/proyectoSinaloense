@@ -116,15 +116,7 @@
 			</div>
 	    </ul>
 	</nav>
-	
-	
-	
-	
-	
-	
-	
-	
-	<div >
+	<div>
 		<div class="container" > 
 			<ul class="two-rows">
 				</ul>
@@ -134,6 +126,33 @@
 				<ul class="two-rows" class="fondo123">
 				
 				</ul>
+		</div>
+	</div>
+	
+	<div id="piechart"></div>
+
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+	<script type="text/javascript">
+		// Load google charts
+		google.charts.load('current', {'packages':['corechart']});
+		google.charts.setOnLoadCallback(drawChart);
+
+
+		function drawChart() {
+			var data = google.visualization.arrayToDataTable([
+			['Task', 'Hours per Day'],
+			['Chevrolet', 16],
+			['Nissan', 23],
+			['Mini', 12],
+			['Ford', 12],
+			['Hyundai', 18]
+			]);
+			var options = {'title':'Marcas mas Solicitadas', 'width':550, 'height':400};
+			var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+			chart.draw(data, options);
+		}
+	</script>
 		<section>
 		
 		  

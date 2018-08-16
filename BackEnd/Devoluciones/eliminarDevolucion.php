@@ -5,21 +5,14 @@
 	ECHO "folio_devolucion a eliminar: ".$folio_devolucion."</BR>";
 	
 	
-	$servername = "localhost";
-	$username = "root";
-	$password = "usbw";
-	$database = "proyectosinaloense";
-	
-	$conexion = mysqli_connect($servername, $username, $password, $database);
-	$bandera_conexion = true;
+	include("../conexion.php");
+	$banderaconexion = true;
 	
 	if ($conexion){
-		 ECHO "Conexión exitosa (:<BR>";
-		 ECHO "Ejecutando consulta <BR>";
-	$query="DELETE FROM Devoluciones WHERE folio_devolucion= ".$folio_devolucion."";
-		//2.2 Ejecutar la consulta
-		ECHO $query. "<BR>";
-		$resultados=mysqli_query($conexion, $query);
+		$param=array(
+			array(&$folio_devolucion)
+		);
+		$resultados=sqlsrv_query($conexion, "exec spEliminarDevolucion @folio=?",$param);
 		
 		//2.3 Validar la ejecución
 		$banderaconsulta= true;
@@ -32,7 +25,7 @@
 		
 		if($banderaconsulta==true){
 			ECHO "Refrescando página post-eliminación <BR>";
-			header("Refresh:5 url=http://localhost:8080/ProyectoSinoaloense/Devoluciones/consultasDevolucion.php");
+			header("Location: consultasDevolucion.php");
 		}else{
 			ECHO "No se imprimirán resultados <BR>";
 		}

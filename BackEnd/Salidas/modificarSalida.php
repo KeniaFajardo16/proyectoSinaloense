@@ -8,13 +8,8 @@
 	$almacen_salida = $_POST["almacen_salida"];
 
 	
-	$servername = "localhost";
-	$username = "root";
-	$password = "usbw";
-	$database = "proyectosinaloense";
-	
-	$conexion = mysqli_connect($servername, $username, $password, $database);
-	$bandera_conexion = true;
+	include("../conexion.php");
+	$banderaconexion = true;
 	
 	
 	if ($conexion){//si hubo conexión
@@ -27,16 +22,20 @@
 	
 	$banderaconsulta=true;
 	if ($banderaconsulta == true){
-		ECHO "Ejecutando consulta </br>";
-	$query = "UPDATE Salidas SET fecha_salida='".$fecha_salida."' , refaccion_salida='".$refaccion_salida."', cantidad_salida='".$cantidad_salida."', almacen_salida='".$almacen_salida."' WHERE folio_salida=".$folio_salida."";
-		ECHO $query."</br>";
-		$resultado=mysqli_query($conexion,$query);
+		$param=array(
+			array(&$folio_salida),
+			array(&$fecha_salida),
+			array(&$refaccion_salida),
+			array(&$cantidad_salida),
+			array(&$almacen_salida)
+		);
+		$resultado=sqlsrv_query($conexion,"exec spModificarSalida @folio=?,@fecha=?,@refaccion=?,@cantidad=?,@almacen=?",$param);
 
 		
 		if($resultado){
 			ECHO "La modificación fue exitosa </br>";
 			//redireccion a la pagina de consulta
-			header("Refresh:5 url=http://localhost:8080/ProyectoSinoaloense/Salidas/consultasSalida.php");
+			header("Location: consultasSalida.php");
 		}else{
 			ECHO "La modificación fue fallida ";
 		}
